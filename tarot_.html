@@ -1,0 +1,2695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔮 粉晶塔罗 · 命运指引</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(ellipse at top, #2d1b4e 0%, #1a0f2e 50%, #0d0618 100%);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 星空背景粒子 */
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(255, 182, 193, 0.6);
+    border-radius: 50%;
+    animation: float 8s infinite ease-in-out;
+    box-shadow: 0 0 6px rgba(255, 182, 193, 0.4);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+    50% { transform: translateY(-30px) scale(1.2); opacity: 0.8; }
+}
+
+/* 主容器 */
+.container {
+    position: relative;
+    z-index: 1;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+}
+
+/* 标题 */
+h1 {
+    text-align: center;
+    font-size: 28px;
+    margin: 20px 0 8px;
+    background: linear-gradient(135deg, #ffd0e8, #ff7ac6, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 208, 232, 0.7);
+    margin-bottom: 24px;
+}
+
+/* 步骤指示器 */
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.4s ease;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.step-dot.active {
+    background: linear-gradient(135deg, #ff7ac6, #a855f7);
+    border-color: rgba(255, 122, 198, 0.5);
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+    transform: scale(1.2);
+}
+
+/* 面板 */
+.panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 20px;
+    margin-bottom: 16px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-title {
+    text-align: center;
+    font-size: 17px;
+    color: #ffd0e8;
+    margin-bottom: 18px;
+    font-weight: 600;
+}
+
+/* 牌阵选择 */
+.spread-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.spread-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 18px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.spread-btn:hover, .spread-btn.selected {
+    background: rgba(255, 122, 198, 0.15);
+    border-color: rgba(255, 122, 198, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.2);
+}
+
+.spread-icon {
+    font-size: 32px;
+    margin-bottom: 4px;
+}
+
+.spread-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.spread-desc {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.5;
+}
+
+/* 主题选择 */
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.topic-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.topic-btn:hover, .topic-btn.selected {
+    background: linear-gradient(135deg, rgba(255, 122, 198, 0.3), rgba(168, 85, 247, 0.3));
+    border-color: rgba(255, 122, 198, 0.5);
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.custom-input input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    margin-bottom: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.custom-input input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.custom-input input:focus {
+    border-color: rgba(255, 122, 198, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* 按钮 */
+.action-btn, .shuffle-btn, .draw-deck {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ff7ac6, #a855f7);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn:hover:not(:disabled), .shuffle-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(168, 85, 247, 0.5);
+}
+
+.action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 洗牌区域 */
+.shuffle-area, .cut-area, .draw-area, .spread-display, .reading-section {
+    display: none;
+    animation: fadeIn 0.6s ease;
+}
+
+.shuffle-area.active, .cut-area.active, .draw-area.active, .spread-display.active, .reading-section.active {
+    display: block;
+}
+
+.shuffle-text, .cut-text, .draw-instruction {
+    text-align: center;
+    font-size: 15px;
+    color: #ffd0e8;
+    margin-bottom: 20px;
+    min-height: 24px;
+    transition: all 0.3s ease;
+}
+
+/* 牌堆容器 */
+.deck-container {
+    display: flex;
+    justify-content: center;
+    gap: -20px;
+    margin: 30px 0;
+    perspective: 1000px;
+}
+
+.deck-card {
+    width: 80px;
+    height: 130px;
+    background: linear-gradient(135deg, #7c3aed, #ec4899);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 8px 30px rgba(236, 72, 153, 0.3);
+    margin-left: -30px;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.deck-card:first-child {
+    margin-left: 0;
+}
+
+.deck-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: rotate(25deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(25deg); }
+    100% { transform: translateX(100%) rotate(25deg); }
+}
+
+.deck-card.shuffling {
+    animation: shuffleAnim 0.6s ease-in-out;
+}
+
+@keyframes shuffleAnim {
+    0%, 100% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-15px) rotate(-8deg); }
+    50% { transform: translateX(15px) rotate(8deg); }
+    75% { transform: translateX(-8px) rotate(-4deg); }
+}
+
+.shuffle-count {
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 12px;
+}
+
+/* 切牌区域 */
+.cut-deck {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.cut-pile {
+    width: 100px;
+    height: 150px;
+    background: linear-gradient(135deg, #7c3aed, #ec4899);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.cut-pile:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(236, 72, 153, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.cut-pile.selected {
+    transform: translateY(-12px) scale(1.08);
+    box-shadow: 0 15px 40px rgba(255, 122, 198, 0.6);
+    border-color: #ff7ac6;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 15px 40px rgba(255, 122, 198, 0.6); }
+    50% { box-shadow: 0 15px 50px rgba(255, 122, 198, 0.8); }
+}
+
+.cut-or {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+}
+
+/* 抽牌区域 */
+.draw-progress {
+    text-align: center;
+    font-size: 14px;
+    color: rgba(255, 208, 232, 0.8);
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.draw-deck {
+    width: 120px;
+    height: 180px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #7c3aed, #ec4899);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    animation: floatDeck 3s ease-in-out infinite;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 40px rgba(236, 72, 153, 0.4);
+}
+
+@keyframes floatDeck {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+.draw-deck:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 50px rgba(236, 72, 153, 0.6);
+}
+
+.draw-deck .remaining {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    font-size: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: rgba(255,255,255,0.8);
+}
+
+.drawn-cards-display {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    min-height: 60px;
+}
+
+.drawn-card-mini {
+    width: 50px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    animation: miniAppear 0.4s ease;
+}
+
+.drawn-card-mini.reversed {
+    transform: rotate(180deg);
+}
+
+@keyframes miniAppear {
+    from { transform: scale(0) rotateY(90deg); opacity: 0; }
+    to { transform: scale(1) rotateY(0); opacity: 1; }
+}
+
+.mini-emoji {
+    font-size: 22px;
+}
+
+.mini-name {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 2px;
+}
+
+/* 牌阵展示 */
+.spread-display {
+    text-align: center;
+}
+
+.spread-3-layout {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+}
+
+.spread-6-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 12px;
+    margin: 24px auto;
+    max-width: 340px;
+    min-height: 400px;
+    place-items: center;
+}
+
+.final-card {
+    width: 95px;
+    position: relative;
+    animation: cardAppear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.final-card.reversed .card-frame {
+    transform: rotate(180deg);
+}
+
+@keyframes cardAppear {
+    from { transform: scale(0.5) rotateY(90deg); opacity: 0; }
+    to { transform: scale(1) rotateY(0); opacity: 1; }
+}
+
+.card-frame {
+    width: 95px;
+    height: 155px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.card-emoji {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+.card-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+}
+
+.position-tag {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #ffd0e8;
+    background: rgba(255, 122, 198, 0.15);
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    border: 1px solid rgba(255, 122, 198, 0.2);
+}
+
+/* 解读区域 */
+.reading-section {
+    animation: fadeIn 0.8s ease;
+}
+
+.reading-title {
+    text-align: center;
+    font-size: 20px;
+    color: #ffd0e8;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.card-reading {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 14px;
+    animation: slideUp 0.6s ease;
+    animation-fill-mode: both;
+}
+
+.card-reading:nth-child(1) { animation-delay: 0.1s; }
+.card-reading:nth-child(2) { animation-delay: 0.2s; }
+.card-reading:nth-child(3) { animation-delay: 0.3s; }
+.card-reading:nth-child(4) { animation-delay: 0.4s; }
+.card-reading:nth-child(5) { animation-delay: 0.5s; }
+.card-reading:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.reading-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.reading-card-emoji {
+    font-size: 36px;
+    flex-shrink: 0;
+}
+
+.reading-card-info h3 {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.position-name {
+    font-size: 12px;
+    color: #ffd0e8;
+    margin-bottom: 4px;
+}
+
+.card-keyword {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.reading-content {
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.reading-content p {
+    margin-bottom: 8px;
+}
+
+.highlight {
+    color: #ffd0e8;
+    font-weight: 600;
+}
+
+.summary-reading {
+    background: linear-gradient(135deg, rgba(255, 122, 198, 0.1), rgba(168, 85, 247, 0.1));
+    border: 1.5px solid rgba(255, 122, 198, 0.2);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0;
+    font-size: 14px;
+    line-height: 1.9;
+    color: rgba(255, 255, 255, 0.9);
+    animation: fadeIn 1s ease 0.8s both;
+}
+
+.summary-reading h3 {
+    text-align: center;
+    color: #ffd0e8;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.bottom-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.secondary-btn {
+    flex: 1;
+    padding: 14px;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 122, 198, 0.4);
+    transform: translateY(-2px);
+}
+
+/* 响应式 */
+@media (max-width: 380px) {
+    .topic-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .spread-grid {
+        grid-template-columns: 1fr;
+    }
+    .spread-3-layout {
+        gap: 8px;
+    }
+    .final-card, .card-frame {
+        width: 85px;
+        height: 140px;
+    }
+    .card-emoji {
+        font-size: 32px;
+    }
+}
+
+/* 扇形牌堆 - 双扇区 */
+.fan-deck {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    margin: 10px 0;
+    overflow: visible;
+}
+
+.fan-row {
+    position: absolute;
+    width: 100%;
+    height: 160px;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.fan-row-top {
+    bottom: 140px;
+    z-index: 10;
+}
+
+.fan-row-bottom {
+    bottom: 10px;
+    z-index: 20;
+}
+
+.fan-card {
+    position: absolute;
+    width: 72px;
+    height: 118px;
+    background: linear-gradient(160deg, #6d28d9 0%, #be185d 50%, #7c3aed 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    bottom: 0;
+    transform-origin: bottom center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.2s ease,
+                filter 0.2s ease;
+}
+
+.fan-card::after {
+    content: '🌸';
+    font-size: 28px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* 斗地主式hover - 只抬起 */
+.fan-card:hover {
+    transform: var(--base-transform) translateY(-18px) !important;
+    box-shadow: 0 12px 35px rgba(236, 72, 153, 0.6), 0 0 0 3px rgba(255, 122, 198, 0.5) !important;
+    filter: brightness(1.2);
+    z-index: 200 !important;
+}
+
+/* 移动端touch效果 */
+.fan-card.touch-hover {
+    transform: var(--base-transform) translateY(-18px) !important;
+    box-shadow: 0 12px 35px rgba(236, 72, 153, 0.6), 0 0 0 3px rgba(255, 122, 198, 0.5) !important;
+    filter: brightness(1.2);
+    z-index: 200 !important;
+}
+
+.fan-card.selected {
+    animation: cardFlyOut 0.5s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes cardFlyOut {
+    0% { transform: var(--base-transform); opacity: 1; }
+    40% { transform: var(--base-transform) translateY(-60px) scale(1.05); opacity: 1; }
+    100% { transform: var(--base-transform) translateY(-140px) scale(0.4); opacity: 0; }
+}
+
+.fan-card.shimmer {
+    animation: fanShimmer 0.4s ease;
+}
+
+@keyframes fanShimmer {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+}
+
+/* 特殊动画 */
+.magic-sparkle {
+    position: fixed;
+    pointer-events: none;
+    font-size: 20px;
+    animation: sparkleFly 1.5s ease-out forwards;
+    z-index: 100;
+}
+
+@keyframes sparkleFly {
+    0% { opacity: 1; transform: translate(0, 0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
+}
+
+/* 隐藏滚动条但保持滚动 */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+</style>
+<base target="_blank">
+</head>
+<body>
+
+<div id="particles"></div>
+
+<div class="container">
+<h1>🔮 粉晶塔罗</h1>
+<div class="subtitle">命运正在回应你的内心</div>
+
+<div class="step-indicator" id="stepIndicator">
+    <div class="step-dot active"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+    <div class="step-dot"></div>
+</div>
+
+<!-- 步骤1: 选择牌阵 -->
+<div class="panel" id="step1">
+    <div class="panel-title">✨ 选择牌阵 ✨</div>
+    <div class="spread-grid">
+        <div class="spread-btn" data-spread="3" onclick="selectSpread(3)">
+            <span class="spread-icon">🌙</span>
+            <span class="spread-name">三张牌阵</span>
+            <span class="spread-desc">过去 · 现在 · 未来<br>适合快速指引</span>
+        </div>
+        <div class="spread-btn" data-spread="6" onclick="selectSpread(6)">
+            <span class="spread-icon">⭐</span>
+            <span class="spread-name">凯尔特十字</span>
+            <span class="spread-desc">六张深度解读<br>全面分析问题</span>
+        </div>
+    </div>
+</div>
+
+<!-- 步骤2: 选择主题 -->
+<div class="panel" id="step2" style="display: none;">
+    <div class="panel-title">💫 选择你关心的领域 💫</div>
+    <div class="topic-grid">
+        <div class="topic-btn" data-topic="爱情" onclick="selectTopic(this, '爱情')">💕 爱情</div>
+        <div class="topic-btn" data-topic="事业" onclick="selectTopic(this, '事业')">💼 事业</div>
+        <div class="topic-btn" data-topic="财运" onclick="selectTopic(this, '财运')">💰 财运</div>
+        <div class="topic-btn" data-topic="学业" onclick="selectTopic(this, '学业')">📚 学业</div>
+        <div class="topic-btn" data-topic="健康" onclick="selectTopic(this, '健康')">🌿 健康</div>
+        <div class="topic-btn" data-topic="人际" onclick="selectTopic(this, '人际')">🤝 人际</div>
+    </div>
+    <div class="custom-input">
+        <input type="text" id="customTopic" placeholder="✨ 或输入自定义问题（如：我该不该换工作？）..." oninput="handleCustomInput(this)">
+    </div>
+    <button class="action-btn" id="startBtn" onclick="goToShuffle()" disabled>进入洗牌 🔮</button>
+</div>
+
+<!-- 步骤3: 洗牌 -->
+<div class="shuffle-area" id="shuffleArea">
+    <div class="shuffle-text" id="shuffleText">✨ 请将注意力集中在你的问题上 ✨</div>
+    <div class="deck-container">
+        <div class="deck-card">🌸</div>
+        <div class="deck-card">🌸</div>
+        <div class="deck-card">🌸</div>
+    </div>
+    <div class="shuffle-actions" style="display: flex; gap: 12px; margin-top: 20px;">
+        <button class="shuffle-btn" id="shuffleBtn" onclick="shuffleDeck()" style="flex: 1;">🔀 继续洗牌</button>
+        <button class="action-btn" id="cutBtn" onclick="goToCut()" style="flex: 1; display: none;">✨ 进入切牌 →</button>
+    </div>
+    <div class="shuffle-count" id="shuffleCount">已洗牌 0 次，你可以继续洗牌或随时进入切牌</div>
+</div>
+
+<!-- 步骤4: 切牌 -->
+<div class="cut-area" id="cutArea">
+    <div class="cut-text">🔮 请选择一堆牌作为你的牌堆</div>
+    <div class="cut-deck">
+        <div class="cut-pile" onclick="selectCutPile(0)">
+            <span>🌸<br><small style="font-size:14px;color:rgba(255,255,255,0.6)">A</small></span>
+        </div>
+        <span class="cut-or">或</span>
+        <div class="cut-pile" onclick="selectCutPile(1)">
+            <span>🌸<br><small style="font-size:14px;color:rgba(255,255,255,0.6)">B</small></span>
+        </div>
+    </div>
+</div>
+
+<!-- 步骤5: 抽牌 -->
+<div class="draw-area" id="drawArea">
+    <div class="draw-instruction" id="drawInstruction">✨ 心中默念你的问题，从牌堆中选择你要的牌 ✨</div>
+    <div class="draw-progress" id="drawProgress">已选 0 / 3 张</div>
+    <div class="fan-deck" id="fanDeck"></div>
+    <div class="drawn-cards-display" id="drawnCardsDisplay"></div>
+</div>
+
+<!-- 牌阵展示 -->
+<div class="spread-display" id="spreadDisplay">
+    <div class="panel-title" id="spreadTitle"></div>
+    <div id="spreadLayout"></div>
+</div>
+
+<!-- 解读区域 -->
+<div class="reading-section" id="readingSection">
+    <div class="reading-title" id="readingTitle"></div>
+    <div id="readingsContainer"></div>
+    <div class="summary-reading" id="summaryReading"></div>
+    <div class="bottom-actions">
+        <button class="secondary-btn" onclick="restart()">🔄 重新占卜</button>
+        <button class="secondary-btn" onclick="shareReading()">📤 分享结果</button>
+    </div>
+</div>
+</div>
+
+<script>
+
+// ========== 完整78张塔罗牌数据库 ==========
+
+// 大阿卡纳 (22张)
+const majorArcana = [
+{ id: 0, name: "愚者", emoji: "🃏", keywords: "开端,自由,冒险", element: "风" },
+{ id: 1, name: "魔术师", emoji: "🎩", keywords: "创造,意志,显化", element: "风" },
+{ id: 2, name: "女祭司", emoji: "🌙", keywords: "直觉,秘密,内在", element: "水" },
+{ id: 3, name: "皇后", emoji: "👑", keywords: "丰饶,滋养,感官", element: "土" },
+{ id: 4, name: "皇帝", emoji: "⚔️", keywords: "权力,结构,控制", element: "火" },
+{ id: 5, name: "教皇", emoji: "📿", keywords: "传统,教导,信仰", element: "土" },
+{ id: 6, name: "恋人", emoji: "💕", keywords: "选择,结合,价值观", element: "风" },
+{ id: 7, name: "战车", emoji: "🏎️", keywords: "意志,胜利,控制", element: "水" },
+{ id: 8, name: "力量", emoji: "🦁", keywords: "勇气,耐心,影响", element: "火" },
+{ id: 9, name: "隐者", emoji: "🕯️", keywords: "孤独,寻找,指引", element: "土" },
+{ id: 10, name: "命运之轮", emoji: "☸️", keywords: "转变,周期,命运", element: "火" },
+{ id: 11, name: "正义", emoji: "⚖️", keywords: "公正,因果,平衡", element: "风" },
+{ id: 12, name: "倒吊人", emoji: "🙃", keywords: "牺牲,等待,视角", element: "水" },
+{ id: 13, name: "死神", emoji: "💀", keywords: "结束,转化,新生", element: "水" },
+{ id: 14, name: "节制", emoji: "🏺", keywords: "调和,中庸,融合", element: "火" },
+{ id: 15, name: "恶魔", emoji: "😈", keywords: "束缚,欲望,物质", element: "土" },
+{ id: 16, name: "塔", emoji: "🗼", keywords: "突变,觉醒,释放", element: "火" },
+{ id: 17, name: "星星", emoji: "⭐", keywords: "希望,灵感,宁静", element: "风" },
+{ id: 18, name: "月亮", emoji: "🌙", keywords: "幻象,恐惧,潜意识", element: "水" },
+{ id: 19, name: "太阳", emoji: "☀️", keywords: "成功,喜悦,活力", element: "火" },
+{ id: 20, name: "审判", emoji: "📯", keywords: "重生,召唤,宽恕", element: "火" },
+{ id: 21, name: "世界", emoji: "🌍", keywords: "圆满,完成,整合", element: "土" }
+];
+
+// 小阿卡纳 - 权杖 (14张)
+const wands = [
+{ id: 22, name: "权杖首牌", emoji: "🪄", keywords: "灵感,创造,潜能", suit: "权杖", num: "首牌" },
+{ id: 23, name: "权杖二", emoji: "⚔️", keywords: "规划,决定,权衡", suit: "权杖", num: "二" },
+{ id: 24, name: "权杖三", emoji: "🌊", keywords: "远见,扩张,合作", suit: "权杖", num: "三" },
+{ id: 25, name: "权杖四", emoji: "🏰", keywords: "庆祝,稳定,归家", suit: "权杖", num: "四" },
+{ id: 26, name: "权杖五", emoji: "⚡", keywords: "冲突,竞争,分歧", suit: "权杖", num: "五" },
+{ id: 27, name: "权杖六", emoji: "🏆", keywords: "胜利,认可,自信", suit: "权杖", num: "六" },
+{ id: 28, name: "权杖七", emoji: "🛡️", keywords: "防御,坚持,勇气", suit: "权杖", num: "七" },
+{ id: 29, name: "权杖八", emoji: "🚀", keywords: "速度,行动,进展", suit: "权杖", num: "八" },
+{ id: 30, name: "权杖九", emoji: "🤺", keywords: "警觉,准备,韧性", suit: "权杖", num: "九" },
+{ id: 31, name: "权杖十", emoji: "🎋", keywords: "负担,责任,努力", suit: "权杖", num: "十" },
+{ id: 32, name: "权杖侍从", emoji: "📜", keywords: "探索,热情,消息", suit: "权杖", num: "侍从" },
+{ id: 33, name: "权杖骑士", emoji: "🏇", keywords: "冲动,冒险,追寻", suit: "权杖", num: "骑士" },
+{ id: 34, name: "权杖王后", emoji: "🔥", keywords: "自信,独立,魅力", suit: "权杖", num: "王后" },
+{ id: 35, name: "权杖国王", emoji: "👑", keywords: "领导力,远见,创业", suit: "权杖", num: "国王" }
+];
+
+// 小阿卡纳 - 圣杯 (14张)
+const cups = [
+{ id: 36, name: "圣杯首牌", emoji: "🏆", keywords: "情感,爱,直觉", suit: "圣杯", num: "首牌" },
+{ id: 37, name: "圣杯二", emoji: "💑", keywords: "结合,平等,吸引", suit: "圣杯", num: "二" },
+{ id: 38, name: "圣杯三", emoji: "🍻", keywords: "欢庆,友谊,团体", suit: "圣杯", num: "三" },
+{ id: 39, name: "圣杯四", emoji: "😔", keywords: "倦怠,不满足,沉思", suit: "圣杯", num: "四" },
+{ id: 40, name: "圣杯五", emoji: "😢", keywords: "失落,悲伤,遗憾", suit: "圣杯", num: "五" },
+{ id: 41, name: "圣杯六", emoji: "🌸", keywords: "回忆,童年,馈赠", suit: "圣杯", num: "六" },
+{ id: 42, name: "圣杯七", emoji: "🌈", keywords: "幻想,选择,迷惑", suit: "圣杯", num: "七" },
+{ id: 43, name: "圣杯八", emoji: "🚶", keywords: "离开,追寻,放下", suit: "圣杯", num: "八" },
+{ id: 44, name: "圣杯九", emoji: "😊", keywords: "满足,愿望,享受", suit: "圣杯", num: "九" },
+{ id: 45, name: "圣杯十", emoji: "👨‍👩‍👧‍👦", keywords: "家庭,和谐,幸福", suit: "圣杯", num: "十" },
+{ id: 46, name: "圣杯侍从", emoji: "💌", keywords: "浪漫,敏感,想象", suit: "圣杯", num: "侍从" },
+{ id: 47, name: "圣杯骑士", emoji: "🐴", keywords: "追求,邀约,浪漫", suit: "圣杯", num: "骑士" },
+{ id: 48, name: "圣杯王后", emoji: "🌊", keywords: "慈悲,直觉,温柔", suit: "圣杯", num: "王后" },
+{ id: 49, name: "圣杯国王", emoji: "🎭", keywords: "掌控,成熟,艺术", suit: "圣杯", num: "国王" }
+];
+
+// 小阿卡纳 - 宝剑 (14张)
+const swords = [
+{ id: 50, name: "宝剑首牌", emoji: "⚔️", keywords: "清晰,突破,真相", suit: "宝剑", num: "首牌" },
+{ id: 51, name: "宝剑二", emoji: "🙈", keywords: "僵局,回避,犹豫", suit: "宝剑", num: "二" },
+{ id: 52, name: "宝剑三", emoji: "💔", keywords: "心碎,悲伤,痛苦", suit: "宝剑", num: "三" },
+{ id: 53, name: "宝剑四", emoji: "🛌", keywords: "休息,恢复,沉思", suit: "宝剑", num: "四" },
+{ id: 54, name: "宝剑五", emoji: "🤼", keywords: "冲突,失败,孤立", suit: "宝剑", num: "五" },
+{ id: 55, name: "宝剑六", emoji: "⛵", keywords: "过渡,疗愈,离开", suit: "宝剑", num: "六" },
+{ id: 56, name: "宝剑七", emoji: "🦊", keywords: "策略,隐秘,变通", suit: "宝剑", num: "七" },
+{ id: 57, name: "宝剑八", emoji: "🪢", keywords: "束缚,限制,自我设限", suit: "宝剑", num: "八" },
+{ id: 58, name: "宝剑九", emoji: "😰", keywords: "焦虑,噩梦,担忧", suit: "宝剑", num: "九" },
+{ id: 59, name: "宝剑十", emoji: "🗡️", keywords: "结束,痛苦,谷底", suit: "宝剑", num: "十" },
+{ id: 60, name: "宝剑侍从", emoji: "📋", keywords: "好奇,警觉,新想法", suit: "宝剑", num: "侍从" },
+{ id: 61, name: "宝剑骑士", emoji: "⚡", keywords: "激进,果断,冲动", suit: "宝剑", num: "骑士" },
+{ id: 62, name: "宝剑王后", emoji: "🦅", keywords: "独立,清晰,直接", suit: "宝剑", num: "王后" },
+{ id: 63, name: "宝剑国王", emoji: "🧠", keywords: "理智,权威,判断", suit: "宝剑", num: "国王" }
+];
+
+// 小阿卡纳 - 星币 (14张)
+const pentacles = [
+{ id: 64, name: "星币首牌", emoji: "💎", keywords: "机会,物质,种子", suit: "星币", num: "首牌" },
+{ id: 65, name: "星币二", emoji: "🤹", keywords: "平衡,适应,灵活", suit: "星币", num: "二" },
+{ id: 66, name: "星币三", emoji: "🏗️", keywords: "合作,技能,成长", suit: "星币", num: "三" },
+{ id: 67, name: "星币四", emoji: "🛡️", keywords: "保守,控制,囤积", suit: "星币", num: "四" },
+{ id: 68, name: "星币五", emoji: "🌨️", keywords: "困境,损失,孤立", suit: "星币", num: "五" },
+{ id: 69, name: "星币六", emoji: "🤝", keywords: "慷慨,给予,交换", suit: "星币", num: "六" },
+{ id: 70, name: "星币七", emoji: "🌱", keywords: "耐心,评估,成长", suit: "星币", num: "七" },
+{ id: 71, name: "星币八", emoji: "🔨", keywords: "勤奋,专注,技艺", suit: "星币", num: "八" },
+{ id: 72, name: "星币九", emoji: "🦚", keywords: "独立,享受,成果", suit: "星币", num: "九" },
+{ id: 73, name: "星币十", emoji: "🏛️", keywords: "传承,财富,家庭", suit: "星币", num: "十" },
+{ id: 74, name: "星币侍从", emoji: "📚", keywords: "学习,务实,机会", suit: "星币", num: "侍从" },
+{ id: 75, name: "星币骑士", emoji: "🐢", keywords: "勤奋,可靠,缓慢", suit: "星币", num: "骑士" },
+{ id: 76, name: "星币王后", emoji: "🌺", keywords: "滋养,务实,慷慨", suit: "星币", num: "王后" },
+{ id: 77, name: "星币国王", emoji: "🦁", keywords: "成功,稳重,企业家", suit: "星币", num: "国王" }
+];
+
+// 合并所有牌
+const allCards = [...majorArcana, ...wands, ...cups, ...swords, ...pentacles];
+
+// 牌阵位置名称
+const spread3Positions = ['过去的影响', '现在的状况', '未来的走向'];
+const spread6Positions = ['现在的状况', '面临的阻碍', '过去的根基', '近期未来', '你的目标', '最终结果'];
+
+// ========== 全局状态 ==========
+let currentStep = 1;
+let selectedSpread = 0;
+let selectedTopic = '';
+let shuffleCount = 0;
+let cutPile = null;
+let drawnCards = [];
+let deck = [];
+
+// ========== 工具函数 ==========
+function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function createSparkles(x, y) {
+    const emojis = ['✨', '💫', '🌟', '⭐', '💖', '🔮'];
+    for (let i = 0; i < 10; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'magic-sparkle';
+        sparkle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        sparkle.style.left = x + 'px';
+        sparkle.style.top = y + 'px';
+        const angle = (Math.PI * 2 * i) / 10;
+        const distance = 60 + Math.random() * 80;
+        sparkle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+        sparkle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1500);
+    }
+}
+
+function vibrate(pattern) {
+    if (navigator.vibrate) navigator.vibrate(pattern);
+}
+
+// ========== 初始化 ==========
+function initParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.top = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 8 + 's';
+        p.style.animationDuration = (6 + Math.random() * 6) + 's';
+        p.style.width = (2 + Math.random() * 3) + 'px';
+        p.style.height = p.style.width;
+        container.appendChild(p);
+    }
+}
+
+function updateStep(step) {
+    currentStep = step;
+    document.querySelectorAll('.step-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i < step);
+    });
+}
+
+// ========== 步骤1: 选择牌阵 ==========
+function selectSpread(spread) {
+    selectedSpread = spread;
+    document.querySelectorAll('.spread-btn').forEach(btn => {
+        btn.classList.toggle('selected', parseInt(btn.dataset.spread) === spread);
+    });
+    vibrate(50);
+
+    setTimeout(() => {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('step2').style.animation = 'fadeIn 0.5s ease';
+        updateStep(2);
+    }, 400);
+}
+
+// ========== 步骤2: 选择主题 ==========
+function selectTopic(btn, topic) {
+    document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedTopic = topic;
+    document.getElementById('customTopic').value = '';
+    checkCanStart();
+    vibrate(30);
+}
+
+function handleCustomInput(input) {
+    if (input.value.trim()) {
+        document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
+        selectedTopic = input.value.trim();
+        checkCanStart();
+    } else {
+        selectedTopic = '';
+        checkCanStart();
+    }
+}
+
+function checkCanStart() {
+    document.getElementById('startBtn').disabled = !selectedTopic;
+}
+
+// ========== 步骤3: 进入洗牌 ==========
+function goToShuffle() {
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('shuffleArea').classList.add('active');
+    updateStep(3);
+    vibrate([50, 30, 50]);
+
+    deck = shuffleArray([...allCards]);
+    shuffleCount = 0;
+
+    document.getElementById('shuffleBtn').style.display = 'block';
+    document.getElementById('cutBtn').style.display = 'none';
+    document.getElementById('shuffleCount').textContent = '已洗牌 0 次，你可以继续洗牌或随时进入切牌';
+    document.getElementById('shuffleText').textContent = '✨ 请将注意力集中在你的问题上 ✨';
+}
+
+function shuffleDeck() {
+    const cards = document.querySelectorAll('.deck-card');
+    const btn = document.getElementById('shuffleBtn');
+    const count = document.getElementById('shuffleCount');
+    const text = document.getElementById('shuffleText');
+    const cutBtn = document.getElementById('cutBtn');
+
+    cards.forEach(c => {
+        c.classList.remove('shuffling');
+        void c.offsetWidth;
+        c.classList.add('shuffling');
+    });
+    btn.disabled = true;
+    vibrate(60);
+    playShuffleSound();
+
+    deck = shuffleArray(deck);
+    shuffleCount++;
+
+    setTimeout(() => {
+        cards.forEach(c => c.classList.remove('shuffling'));
+        btn.disabled = false;
+
+        const texts = [
+            '✨ 感受牌的能量流动 ✨',
+            '✨ 将你的意念注入牌中 ✨',
+            '✨ 牌正在与你建立连接 ✨',
+            '✨ 能量在牌间穿梭 ✨',
+            '✨ 命运之线正在编织 ✨',
+            '✨ 牌阵在回应你的频率 ✨',
+            '✨ 直觉正在觉醒 ✨'
+        ];
+
+        count.textContent = `已洗牌 ${shuffleCount} 次，随时可以进入切牌`;
+        text.textContent = texts[shuffleCount % texts.length];
+
+        // 显示切牌按钮
+        cutBtn.style.display = 'block';
+
+        if (shuffleCount >= 3) {
+            text.textContent = '✨ 能量已充分激活，随时可以进入切牌 ✨';
+            vibrate([100, 50, 100]);
+        }
+    }, 600);
+}
+
+// ========== 步骤4: 切牌 ==========
+function goToCut() {
+    document.getElementById('shuffleArea').style.display = 'none';
+    document.getElementById('cutArea').classList.add('active');
+    vibrate(50);
+}
+
+function selectCutPile(pile) {
+    cutPile = pile;
+    document.querySelectorAll('.cut-pile').forEach((p, i) => {
+        p.classList.toggle('selected', i === pile);
+    });
+    vibrate([80, 40]);
+
+    const rect = document.querySelector('.cut-pile.selected').getBoundingClientRect();
+    createSparkles(rect.left + rect.width/2, rect.top + rect.height/2);
+
+    if (pile === 1) {
+        const half = Math.floor(deck.length / 2);
+        deck = [...deck.slice(half), ...deck.slice(0, half)];
+    }
+
+    setTimeout(() => {
+        document.getElementById('cutArea').style.display = 'none';
+        goToDraw();
+    }, 800);
+}
+
+// ========== 步骤5: 抽牌 ==========
+function goToDraw() {
+    document.getElementById('drawArea').classList.add('active');
+    updateStep(4);
+    vibrate(50);
+
+    drawnCards = [];
+    document.getElementById('drawProgress').textContent = `已选 0 / ${selectedSpread} 张`;
+    document.getElementById('drawInstruction').textContent = '✨ 心中默念你的问题，从扇形牌中选择你要的牌 ✨';
+    document.getElementById('drawnCardsDisplay').innerHTML = '';
+
+    renderFanDeck();
+}
+
+function renderFanDeck() {
+    const fanDeck = document.getElementById('fanDeck');
+    fanDeck.innerHTML = '';
+
+    const totalCards = Math.min(deck.length, 35);
+    const topCount = Math.floor(totalCards * 0.45);  // 上排少点
+    const bottomCount = totalCards - topCount;        // 下排多点
+
+    const cardWidth = 72;
+    const overlap = 36;
+    const maxAngle = 45;
+
+    // 创建上排容器
+    const topRow = document.createElement('div');
+    topRow.className = 'fan-row fan-row-top';
+    fanDeck.appendChild(topRow);
+
+    // 创建下排容器
+    const bottomRow = document.createElement('div');
+    bottomRow.className = 'fan-row fan-row-bottom';
+    fanDeck.appendChild(bottomRow);
+
+    // 渲染单排扇形的辅助函数
+    function renderRow(rowEl, count, startIdx, isTop) {
+        if (count <= 0) return;
+
+        const angleStep = count > 1 ? (maxAngle * 2) / (count - 1) : 0;
+        const startAngle = -maxAngle;
+
+        const totalWidth = (count - 1) * (cardWidth - overlap) + cardWidth;
+        const containerWidth = fanDeck.offsetWidth || 500;
+        const scale = Math.min(1, (containerWidth - 20) / totalWidth);
+
+        const startX = -(totalWidth * scale) / 2 + (cardWidth * scale) / 2;
+
+        for (let i = 0; i < count; i++) {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'fan-card';
+
+            const angle = startAngle + i * angleStep;
+            const arcOffset = Math.pow(Math.abs(angle) / maxAngle, 2) * (isTop ? 6 : 4);
+
+            const x = startX + i * (cardWidth - overlap) * scale;
+
+            const baseTransform = `translateX(${x}px) rotate(${angle}deg) translateY(-${arcOffset}px) scale(${scale})`;
+            cardEl.style.setProperty('--base-transform', baseTransform);
+            cardEl.style.transform = baseTransform;
+            cardEl.style.zIndex = i + (isTop ? 0 : 50);
+            cardEl.style.left = `calc(50% - ${cardWidth * scale / 2}px)`;
+
+            const deckIdx = startIdx + i;
+            cardEl.dataset.cardIndex = deckIdx;
+
+            cardEl.addEventListener('click', function(e) {
+                e.stopPropagation();
+                selectFanCard(this, parseInt(this.dataset.cardIndex));
+            });
+
+            cardEl.addEventListener('touchstart', function(e) {
+                document.querySelectorAll('.fan-card.touch-hover').forEach(c => c.classList.remove('touch-hover'));
+                this.classList.add('touch-hover');
+            }, {passive: true});
+
+            cardEl.addEventListener('touchend', function() {
+                setTimeout(() => this.classList.remove('touch-hover'), 200);
+            }, {passive: true});
+
+            rowEl.appendChild(cardEl);
+        }
+    }
+
+    renderRow(topRow, topCount, 0, true);
+    renderRow(bottomRow, bottomCount, topCount, false);
+
+    console.log(`双扇形渲染: 上排${topCount}张 + 下排${bottomCount}张 = ${totalCards}张`);
+}
+
+function selectFanCard(cardEl, deckIndex) {
+    if (drawnCards.length >= selectedSpread) return;
+    if (cardEl.classList.contains('selected')) return;
+
+    // 从deck中取出对应的牌
+    const card = deck[deckIndex];
+    // 从deck中移除这张牌
+    deck.splice(deckIndex, 1);
+    const reversed = Math.random() < 0.15;
+
+    drawnCards.push({ data: card, reversed: reversed, position: drawnCards.length });
+
+    // 动画效果
+    cardEl.classList.add('selected');
+    cardEl.classList.add('shimmer');
+    playDrawSound();
+    vibrate(40);
+
+    const rect = cardEl.getBoundingClientRect();
+    createSparkles(rect.left + rect.width/2, rect.top + rect.height/2);
+
+    // 更新进度
+    document.getElementById('drawProgress').textContent = `已选 ${drawnCards.length} / ${selectedSpread} 张`;
+
+    // 添加到底部已选牌展示
+    const display = document.getElementById('drawnCardsDisplay');
+    const mini = document.createElement('div');
+    mini.className = `drawn-card-mini ${reversed ? 'reversed' : ''}`;
+    mini.innerHTML = `<span class="mini-emoji">${card.emoji}</span><span class="mini-name">${card.name}</span>`;
+    display.appendChild(mini);
+
+    // 更新提示文字
+    const instructions = [
+        '✨ 第一张牌已选中，继续选择 ✨',
+        '✨ 能量正在汇聚，再选一张 ✨',
+        '✨ 命运之网正在编织 ✨',
+        '✨ 牌阵即将完成 ✨',
+        '✨ 再选一张，答案即将揭晓 ✨',
+        '✨ 最后一张，完整你的牌阵 ✨'
+    ];
+    document.getElementById('drawInstruction').textContent = instructions[Math.min(drawnCards.length - 1, instructions.length - 1)];
+
+    // 延迟后重新渲染扇形（移除已选中的牌）
+    setTimeout(() => {
+        if (drawnCards.length < selectedSpread) {
+            renderFanDeck();
+        } else {
+            // 全部选完
+            document.getElementById('fanDeck').innerHTML = '';
+            document.getElementById('drawInstruction').textContent = '✨ 选牌完成，准备解读 ✨';
+            vibrate([100, 50, 100, 50, 100]);
+            setTimeout(showSpread, 1000);
+        }
+    }, 600);
+}
+
+// ========== 展示牌阵 ==========
+function showSpread() {
+    document.getElementById('drawArea').style.display = 'none';
+    document.getElementById('spreadDisplay').classList.add('active');
+    updateStep(4);
+
+    const title = document.getElementById('spreadTitle');
+    const layout = document.getElementById('spreadLayout');
+
+    title.textContent = selectedSpread === 3 ? '🌙 三张牌阵 · 时光之流 🌙' : '⭐ 凯尔特十字 · 深度解读 ⭐';
+
+    if (selectedSpread === 3) {
+        layout.className = 'spread-3-layout';
+        layout.innerHTML = drawnCards.map((card, i) => `
+            <div class="final-card ${card.reversed ? 'reversed' : ''}" style="animation-delay: ${i * 0.3}s">
+                <div class="card-frame">
+                    <span class="card-emoji">${card.data.emoji}</span>
+                    <div class="card-info">${card.data.name}</div>
+                </div>
+                <div class="position-tag">${spread3Positions[i]}</div>
+            </div>
+        `).join('');
+    } else {
+        layout.className = 'spread-6-layout';
+        const gridStyles = [
+            'grid-column: 2; grid-row: 2;',
+            'grid-column: 2; grid-row: 2; transform: translate(8px, 0) rotate(90deg);',
+            'grid-column: 1; grid-row: 2;',
+            'grid-column: 3; grid-row: 2;',
+            'grid-column: 2; grid-row: 1;',
+            'grid-column: 2; grid-row: 3;'
+        ];
+
+        layout.innerHTML = drawnCards.map((card, i) => `
+            <div class="final-card ${card.reversed ? 'reversed' : ''}" style="${gridStyles[i]} animation-delay: ${i * 0.2}s">
+                <div class="card-frame">
+                    <span class="card-emoji">${card.data.emoji}</span>
+                    <div class="card-info">${card.data.name}</div>
+                </div>
+                <div class="position-tag">${spread6Positions[i]}</div>
+            </div>
+        `).join('');
+    }
+
+    setTimeout(showReading, 2000);
+}
+
+// ========== 解读区域 ==========
+function showReading() {
+    document.getElementById('spreadDisplay').style.display = 'none';
+    document.getElementById('readingSection').classList.add('active');
+
+    const topicName = selectedTopic.length > 10 ? selectedTopic.substring(0, 10) + '...' : selectedTopic;
+    document.getElementById('readingTitle').textContent = `✨ ${selectedSpread}张牌阵 · ${topicName} ✨`;
+
+    const container = document.getElementById('readingsContainer');
+    container.innerHTML = '';
+
+    const positions = selectedSpread === 3 ? spread3Positions : spread6Positions;
+
+    drawnCards.forEach((card, i) => {
+        const reading = generateReading(card, positions[i], i);
+        const div = document.createElement('div');
+        div.className = 'card-reading';
+        div.innerHTML = `
+            <div class="reading-card-header">
+                <span class="reading-card-emoji">${card.data.emoji}${card.reversed ? ' ↕️' : ''}</span>
+                <div class="reading-card-info">
+                    <h3>${card.data.name} ${card.reversed ? '(逆位)' : '(正位)'}</h3>
+                    <div class="position-name">📍 ${positions[i]}</div>
+                    <div class="card-keyword">💫 ${card.reversed ? '能量受阻，需要内观调整' : card.data.keywords}</div>
+                </div>
+            </div>
+            <div class="reading-content">${reading}</div>
+        `;
+        container.appendChild(div);
+    });
+
+    generateSummary();
+    window.scrollTo({ top: document.getElementById('readingSection').offsetTop - 20, behavior: 'smooth' });
+}
+
+// 生成单张牌解读
+function generateReading(card, position, index) {
+    const { data, reversed } = card;
+    const topic = selectedTopic;
+    let reading = '';
+
+    let baseMeaning = getCardSpecificMeaning(data, reversed);
+    reading += `<p><span class="highlight">【牌面核心】</span>${baseMeaning}</p>`;
+
+    reading += `<p style="margin-top: 10px;"><span class="highlight">【在此位置】</span>`;
+    reading += getPositionMeaning(data, position, reversed, topic, index);
+    reading += `</p>`;
+
+    reading += `<p style="margin-top: 10px;"><span class="highlight">【行动指引】</span>`;
+    reading += getActionGuidance(data, reversed, topic, position);
+    reading += `</p>`;
+
+    return reading;
+}
+
+// 根据具体牌获取含义（每张牌都有独特的正逆位解读）
+
+// 补充宫廷牌详细解读（基于专业塔罗知识）
+function getCourtCardMeaning(data, reversed) {
+    const suit = data.suit;
+    const rank = data.num; // 侍从、骑士、王后、国王
+
+    // 侍从牌 - 学生与信使
+    if (rank === '侍从') {
+        const pageMeanings = {
+            '权杖': reversed
+                ? '热情被分散，或创意缺乏方向。你有很多想法，但缺少将它们落地的耐心。选择一条路径，深入走下去。'
+                : '新的创意火花正在萌发。带着好奇心探索未知，像孩子一样对可能性保持开放。这是学习的最佳时机。',
+            '圣杯': reversed
+                ? '情感上的不成熟，或过度敏感。你的感受力是天赋，但需要边界来保护自己不被淹没。'
+                : '情感的新开端。一段纯真的感受、一次心灵的触动，或一个艺术灵感的降临。敞开心扉，让感受自然流淌。',
+            '宝剑': reversed
+                ? '八卦、谣言或信息过载。你的好奇心是优点，但需要辨别哪些信息值得你的注意力。'
+                : '新的想法或消息即将到来。保持警觉与好奇，像侦探一样收集线索。真相往往藏在细节中。',
+            '星币': reversed
+                ? '学习上的拖延，或对新机会的不信任。成长需要冒险，待在舒适区无法让你进步。'
+                : '新的学习机会或实际项目的开端。带着务实的心态开始，基础打得越牢，未来的建筑越高。'
+        };
+        return pageMeanings[suit] || '新的开始在召唤。带着初学者的心态，放下预设，拥抱未知。';
+    }
+
+    // 骑士牌 - 行动者
+    if (rank === '骑士') {
+        const knightMeanings = {
+            '权杖': reversed
+                ? '冲动的代价，或行动的混乱。热情需要方向，否则只是更快的迷路。暂停，校准，再出发。'
+                : '大胆的行动与冒险。像骑士一样冲锋，但记得带上地图。你的热情是燃料，策略是方向盘。',
+            '圣杯': reversed
+                ? '情感上的冲动，或浪漫的逃避。追求爱情不是错，但需要看清对方是真实的人还是你的投射。'
+                : '浪漫的追寻者。带着心灵去冒险，像堂吉诃德一样理想主义，但记得倾听现实的低语。',
+            '宝剑': reversed
+                ? '言语的冲突，或激进的想法。你的果断是优点，但锋利的剑也会伤到自己。'
+                : '果断的行动与清晰的表达。像骑士一样捍卫真理，但选择值得捍卫的战场。',
+            '星币': reversed
+                ? '过度谨慎，或行动的拖延。完美是完成的敌人，有时候「足够好」就是最好的。'
+                : '稳重而可靠的行动。像老牛一样踏实，每一步都留下印记。慢即是快，稳即是远。'
+        };
+        return knightMeanings[suit] || '行动的时刻。将你的意图转化为脚步，哪怕是小步，也是前进。';
+    }
+
+    // 王后牌 - 内在掌控者
+    if (rank === '王后') {
+        const queenMeanings = {
+            '权杖': reversed
+                ? '自信变成自负，或魅力变成操控。你的光芒是礼物，但不需要通过贬低他人来发光。'
+                : '自信、独立与魅力。像太阳一样温暖而耀眼，但不需要燃烧他人来照亮自己。你是自己生命的主角。',
+            '圣杯': reversed
+                ? '情感的边界模糊，或过度共情。你的慈悲是美德，但需要先填满自己的杯子。'
+                : '慈悲、直觉与温柔。像大海一样包容，但记得你是容器，不是海绵。在给予中保持完整。',
+            '宝剑': reversed
+                ? '冷酷的判断，或过度的理性。清晰是优点，但温暖同样重要。别用真理作为伤人的武器。'
+                : '独立、清晰与直接。像老鹰一样从高处看清全貌，但记得飞下来，与地面上的人连接。',
+            '星币': reversed
+                ? '过度务实，或物质的焦虑。你的慷慨是美德，但需要先确保自己的根基稳固。'
+                : '滋养、务实与慷慨。像大地一样丰饶，给予但不耗尽。在照顾他人之前，先照顾好自己。'
+        };
+        return queenMeanings[suit] || '内在的力量正在成熟。你不需要控制外界，只需掌控自己的反应。';
+    }
+
+    // 国王牌 - 权威与掌控
+    if (rank === '国王') {
+        const kingMeanings = {
+            '权杖': reversed
+                ? '专制的领导，或愿景的空洞。你的远见是天赋，但需要团队的支持来实现，而非独自扛起。'
+                : '领导力、远见与创业精神。像船长一样指引方向，但记得船员也是旅程的一部分。',
+            '圣杯': reversed
+                ? '情感的压抑，或成熟的伪装。你的冷漠是面具，还是真的内心平静？允许自己偶尔失态。'
+                : '掌控、成熟与艺术。像指挥家一样协调情感的乐团，让每个音符都找到位置。',
+            '宝剑': reversed
+                ? '僵化的思维，或权威的滥用。你的智慧是工具，不是武器。真理不需要通过压制来表达。'
+                : '理智、权威与判断。像法官一样公正，但记得法律之外还有人心。',
+            '星币': reversed
+                ? '物质的贪婪，或成功的焦虑。你已经拥有很多，但恐惧让你看不见。停下来，数数你的祝福。'
+                : '成功、稳重与企业家精神。像大树一样扎根深厚，为周围的人提供荫蔽。'
+        };
+        return kingMeanings[suit] || '权威与责任的成熟。你不需要证明什么，你的存在本身就是力量。';
+    }
+
+    return null;
+}
+
+function getCardSpecificMeaning(data, reversed) {
+    // 先检查是否是宫廷牌（侍从、骑士、王后、国王）
+    if (data.num && ['侍从', '骑士', '王后', '国王'].includes(data.num)) {
+        const courtMeaning = getCourtCardMeaning(data, reversed);
+        if (courtMeaning) return courtMeaning;
+    }
+
+    const meanings = {
+        // 大阿卡纳
+        '愚者': reversed
+            ? '冒险的冲动被恐惧冻结，或因鲁莽而错失良机。此刻需要区分「勇敢」与「盲目」——前者有觉知，后者只是逃避思考的借口。'
+            : '全新的起点正在召唤。带着赤子之心踏上未知旅程，不被过往经验束缚。这不是轻率，而是对生命可能性的信任。',
+        '魔术师': reversed
+            ? '能力未被善用，或陷入「空想家」的陷阱。你拥有资源，但缺少将它们落地的执行力。检视是否在用「准备」作为拖延的借口。'
+            : '将意念转化为现实的强大时刻。你手中握有所有需要的元素——意志、情感、心智与物质。关键在于专注并有意识地创造。',
+        '女祭司': reversed
+            ? '直觉被过度理性压制，或陷入「为神秘而神秘」的逃避。真相不在书本中，但也不会自动浮现——需要主动探寻。'
+            : '深层智慧在静默中涌现。此刻适合倾听梦境、观察 synchronicity（共时性）。答案已在心中，只需创造安静的空间让它浮现。',
+        '皇后': reversed
+            ? '创造力受阻，或过度依赖外界认可来确认自我价值。滋养他人之前，先检查自己的「杯子」是否已满。'
+            : '生命的丰盛正在流动。这不是挥霍，而是对感官世界的全然接纳。滋养自己与他人的同时，让创造力自然绽放。',
+        '皇帝': reversed
+            ? '控制失衡——要么过度专制，要么完全逃避责任。真正的力量来自内在的稳定，而非对他人的压制。'
+            : '建立秩序与边界的力量。以清晰的结构和自律为长远目标奠定基础。这不是僵化，而是为自由创造容器。',
+        '教皇': reversed
+            ? '打破陈规的时刻，或警惕教条主义的束缚。传统是桥梁而非围墙——真正的信仰不需要中间人来转译。'
+            : '传统智慧的传承与指引。在既定框架中寻找深层意义，或向有经验的导师求教。尊重规则，但不被规则定义。',
+        '恋人': reversed
+            ? '价值观的深层冲突，或在选择中习惯性逃避。关系的和谐不是「没有分歧」，而是能否在分歧中看见彼此。'
+            : '重要的抉择时刻——关乎价值观的深层对齐。爱不仅是心动的感觉，更是有意识的选择：选择看见，选择理解，选择共同成长。',
+        '战车': reversed
+            ? '意志力分散在太多战线，或胜利后的空虚感。真正的掌控不是征服外界，而是驾驭内在的冲突与矛盾。'
+            : '以坚定的意志冲破阻碍。整合对立的力量——理性与感性、重心与野心——将它们导向共同的目标。',
+        '力量': reversed
+            ? '自信动摇，或误将「控制」当作力量。温柔与耐心比强制更有影响力——真正的力量让人想靠近，而非想逃离。'
+            : '以柔克刚的内在力量。不是压制本能，而是理解、引导并转化它。像水一样——柔软却能穿石。',
+        '隐者': reversed
+            ? '孤立过度，或拒绝必要的帮助。智慧需要在分享中验证，而非独自囤积。退隐是为了更好地回归，而非永久逃离。'
+            : '向内探寻的孤独旅程。暂时退隐并非逃避，而是为了带着更深的理解重返世界。此刻的孤独是丰盛的，而非贫瘠的。',
+        '命运之轮': reversed
+            ? '抗拒改变导致停滞，或陷入「受害者心态」。命运之轮不会为任何人停止转动——区别在于你是骑手还是乘客。'
+            : '周期转换的关键节点。顺应更大的节律，在变化中识别属于自己的时机。上升时播种，下降时休养生息。',
+        '正义': reversed
+            ? '因果的延迟，或自我欺骗。逃避审判不会让债务消失——只会让利息累积到更高。诚实面对是解脱的开始。'
+            : '公正评估的时刻。诚实面对自己的行为与选择，平衡给予与接受的天平。正义不是惩罚，而是恢复平衡的自然力量。',
+        '倒吊人': reversed
+            ? '无意义的牺牲，或拒绝必要的等待。有些视角只有在静止中才能浮现——挣扎只会让你越陷越深。'
+            : '自愿的暂停带来新视角。牺牲某种执念，换取更深层次的理解与解脱。这不是被动，而是主动的「战略性等待」。',
+        '死神': reversed
+            ? '结束的拖延，或对重生的恐惧。旧壳不打破，翅膀无法展开。拖延只会延长痛苦，而非避免它。'
+            : '必然转化的深刻时刻。某种存在形式正在终结，为新生命腾出必要的空间。死神不是敌人，而是最诚实的变革者。',
+        '节制': reversed
+            ? '极端摇摆，或强行混合不兼容的元素。调和需要尊重各部分的独特性——不是让所有东西一样，而是让它们和谐共存。'
+            : '对立元素的精妙融合。在耐心与实践中，找到动态平衡的艺术。这不是妥协，而是更高层次的整合。',
+        '恶魔': reversed
+            ? '潜意识的松动，或依赖模式的瓦解。自由始于承认束缚的存在——看见锁链，才能开始解开它。'
+            : '物质欲望与深层恐惧的显现。识别无形的锁链——那些「不得不」背后的「我选择」。觉察是解放的第一步。',
+        '塔': reversed
+            ? '剧变的余波，或内在崩溃的外在延迟。重建始于废墟中的诚实面对——试图修补裂缝只会让崩塌更剧烈。'
+            : '固有结构的突然崩塌。看似灾难的释放，实则为更真实存在方式的强制开启。塔摧毁的是幻象，而非你本身。',
+        '星星': reversed
+            ? '希望的暂时遮蔽，或信心不足。星光从未熄灭——只是云层需要时间散去。你的怀疑比任何黑暗都更能遮蔽光芒。'
+            : '疗愈后的宁静希望。在暗夜之后，重新与内在指引和宇宙节律连接。这不是盲目的乐观，而是经受考验后的清醒信任。',
+        '月亮': reversed
+            ? '幻觉的消散，或恐惧的过度放大。阴影在直面后往往比想象中渺小——逃避让它在想象中无限膨胀。'
+            : '潜意识与幻象的浮现。在不确定中前行，让直觉成为穿越迷雾的灯笼。恐惧是信使，而非敌人——它指向需要被看见的部分。',
+        '太阳': reversed
+            ? '快乐的短暂遮蔽，或过度乐观的风险。阳光需要透过适当的阴影才能滋养——完全的无阴影只会导致晒伤。'
+            : '生命力的全然绽放。清晰、温暖与成功，享受当下纯粹的喜悦。这不是终点，而是对旅程的肯定与庆祝。',
+        '审判': reversed
+            ? '召唤的忽视，或自我评判的严苛。宽恕自己，才能真正听到生命的召唤——你对自己的审判比任何外界评价都更沉重。'
+            : '深刻觉醒与重生的时刻。回应内在的召唤，带着整合后的自我重返世界。这不是被审判，而是被唤醒。',
+        '世界': reversed
+            ? '完成前的最后一步，或完美主义的陷阱。圆满是一个过程，而非终点——执着于「完成」本身会成为新的束缚。'
+            : '循环的圆满完成与新的开始。整合所有经验，带着完整的自我进入下一段旅程。结束与开始在此刻交汇。',
+
+        // 权杖
+        '权杖首牌': reversed
+            ? '灵感的阻碍，或创意未能落地。火花需要燃料才能持续燃烧——将你的灵感与具体行动连接，否则它只是短暂的闪光。'
+            : '创造的原始冲动降临。新的热情与灵感正在萌芽，抓住这股能量开始行动。这是「做」的时刻，而非「想」的时刻。',
+        '权杖二': reversed
+            ? '规划的瘫痪，或恐惧未知。选择本身不可怕——可怕的是永不选择，让生命在犹豫中流逝。'
+            : '在已知与未知间权衡。规划未来的同时，保持对新可能性的开放。这不是优柔寡断，而是有意识的探索。',
+        '权杖三': reversed
+            ? '视野的局限，或合作的破裂。远见需要团队的支持才能变为现实——独自眺望只能看见风景，无法创造道路。'
+            : '扩展的远见卓识。之前的努力开始显现成果，准备迎接更广阔的舞台。你的视野正在打开，看见别人尚未看见的可能性。',
+        '权杖四': reversed
+            ? '归属感的缺失，或表面的和谐。庆祝需要真实的连接，而非形式——问问自己：这些欢笑中有多少是发自内心的？'
+            : '稳定与欢庆的时刻。享受努力带来的安全感，与身边的人分享喜悦。这不是停滞，而是为下一段旅程充电。',
+        '权杖五': reversed
+            ? '冲突的回避，或内心的斗争。健康的冲突激发成长，破坏性的则消耗能量——区分「竞争」与「战争」。'
+            : '多元力量的碰撞。在分歧中寻找共识，冲突可以激发更好的解决方案。这不是破坏，而是创造力的摩擦。',
+        '权杖六': reversed
+            ? '认可的延迟，或外在的虚荣。真正的自信不需要观众的掌声来维系——如果荣耀离开你就崩塌，那它从未真正属于你。'
+            : '胜利与认可的降临。你的努力被看见，这份荣耀是继续前行的燃料。享受它，但不被它定义。',
+        '权杖七': reversed
+            ? '防御的疲惫，或不必要的战斗。选择值得坚守的阵地——战略性撤退不是懦弱，而是智慧的体现。'
+            : '坚守立场的勇气。面对挑战不退缩，你的信念值得为之辩护。这不是固执，而是对核心价值的忠诚。',
+        '权杖八': reversed
+            ? '行动的混乱，或急躁的代价。速度需要方向——没有方向的快速只是更快的迷路。暂停，校准，再出发。'
+            : '迅猛的进展与动能。阻碍被清除，事情以意想不到的速度推进。抓住这股 momentum，但别忘记检查方向。',
+        '权杖九': reversed
+            ? '防备的过度，或资源的耗尽。坚韧需要恢复来补充——无止境的消耗只会导致崩溃，而非胜利。'
+            : '警觉中的坚持。虽然疲惫，但最后的防线依然稳固。胜利近在咫尺，但别忘了在胜利后给自己真正的休息。',
+        '权杖十': reversed
+            ? '负担的释放，或责任的重新分配。放下不是失败，而是可持续的智慧——你能扛起世界，但不必永远扛起。'
+            : '承担责任的时刻。虽然压力巨大，但你有能力完成。只是需要诚实问自己：这是你的责任，还是你习惯性替别人承担？',
+
+        // 圣杯
+        '圣杯首牌': reversed
+            ? '情感的阻碍，或爱的条件化。真心的给予不需要回报的承诺——有条件的爱不是爱，而是交易。'
+            : '情感的新泉源涌现。爱、直觉与创造力的纯粹流动，滋养生命的根基。打开你的心，让感受自然流淌。',
+        '圣杯二': reversed
+            ? '关系的不平等，或表面的和谐。真正的结合需要双方都保持独立的完整——融合不是消融，而是两个完整者的相遇。'
+            : '平等的交流与吸引。在相互尊重的基础上，建立深刻的情感连接。这是「我们」，但也是「我」和「你」。',
+        '圣杯三': reversed
+            ? '表面的社交，或团体的疏离。庆祝的意义在于共享的情感，而非形式本身——问问自己：这些聚会后，你是更满足还是更空虚？'
+            : '共享的欢乐与友谊。在团体中找到归属感，庆祝生命中的美好时刻。这不是逃避孤独，而是选择与他人共同创造喜悦。',
+        '圣杯四': reversed
+            ? '新机会的察觉，或从倦怠中觉醒。不满有时是改变的必要前奏——它让你从麻木中醒来，重新看见可能性。'
+            : '情感上的倦怠与沉思。对现状的不满足促使你向内寻找真正的渴望。这不是消沉，而是诚实面对自己的起点。',
+        '圣杯五': reversed
+            ? '接受的开始，或视角的转变。损失是真实的，但非故事的全部——在泪水中，试着辨认尚未失去的美好。'
+            : '面对失落与悲伤。允许自己哀悼，同时在泪水中辨认尚未失去的美好。悲伤的深度反映了爱的深度，这不是软弱，而是真实。',
+        '圣杯六': reversed
+            ? '沉溺过去，或童年的阴影。记忆是向导而非居所——成长需要面向当下，而非永远活在一个被美化的过去。'
+            : '温暖的回忆与馈赠。过去的滋养成为现在的力量，或收到意外的礼物。这不是怀旧，而是让历史成为资源。',
+        '圣杯七': reversed
+            ? '幻想的破除，或选择的明晰。迷雾散去后，真正的渴望会更加清晰——有时失去幻觉，是得到真实的前提。'
+            : '幻想与选择的迷雾。众多可能性令人迷惑，需要深入内心分辨真实渴望。这不是软弱，而是面对复杂性的勇气。',
+        '圣杯八': reversed
+            ? '离开的犹豫，或重复的循环。放下需要勇气，但停留的代价可能更高——有些门需要主动关上，新的才能打开。'
+            : '主动寻求更深层的满足。离开已无法滋养你的情境，追寻更有意义的方向。这不是逃避，而是对自我成长的忠诚。',
+        '圣杯九': reversed
+            ? '满足的缺失，或欲望的膨胀。快乐在内，外在的追求只是镜子——如果你无法在自己身上找到它，拥有全世界也不会满足。'
+            : '愿望达成的满足感。享受当下的丰盛，这份喜悦是对过往努力的奖赏。但记得：满足不是终点，而是继续前行的燃料。',
+        '圣杯十': reversed
+            ? '家庭张力，或理想化的落差。完美的画面需要每个成员的真实参与——如果只有你在维持表象，它迟早会崩塌。'
+            : '家庭的和谐与情感的圆满。在亲密关系中体验深层的归属与幸福。这不是童话，而是共同经营的成果。',
+
+        // 宝剑
+        '宝剑首牌': reversed
+            ? '清晰的缺失，或冲动的结论。真相需要耐心，而非急于下判断——你的「确定」可能只是不想继续思考的借口。'
+            : '心智的清晰与突破。新的洞见如闪电般照亮，斩断困惑的迷雾。抓住这个 clarity，但别让它成为对他人的武器。',
+        '宝剑二': reversed
+            ? '僵局的打破，或信息的涌入。回避的墙倒塌后，虽然混乱但至少有了行动的可能——静止的清晰不如动态的真实。'
+            : '两难的僵持与回避。在信息不足时强行决定，不如承认犹豫的正当性。这不是软弱，而是对复杂性的尊重。',
+        '宝剑三': reversed
+            ? '疗愈的开始，或痛苦的释放。心碎的碎片可以成为重建的材料——最痛的裂缝，往往是光进入的地方。'
+            : '深刻的心痛与失落。承认悲伤的真实，是愈合过程中不可跳过的步骤。这不是脆弱，而是让痛苦完成它的工作。',
+        '宝剑四': reversed
+            ? '恢复的完成，或不安的休息。宁静被扰动时，正是重新站起的信号——休息是为了走更长的路，而非永久停留。'
+            : '必要的休息与恢复。从心智的疲惫中退隐，让潜意识整理纷乱的信息。这不是懒惰，而是战略性的暂停。',
+        '宝剑五': reversed
+            ? '和解的可能，或空洞的胜利。没有观众的胜利，往往暗示了真正的代价——问问自己：赢了战斗，是否输了战争？'
+            : '冲突后的代价评估。胜利可能伴随着关系的破裂，值得反思是否得不偿失。有时「正确」不如「连接」重要。',
+        '宝剑六': reversed
+            ? '过渡的困难，或拒绝放下。疗愈的旅程需要自愿的参与——被动拖拽只会让你在原地打转。'
+            : '离开困境的过渡。虽然仍有伤痛，但正在向更平静的水域航行。这不是遗忘，而是带着教训继续前行。',
+        '宝剑七': reversed
+            ? '策略的失败，或诚实的回归。捷径往往是最长的路——诚实有时比策略更有效，因为真实不需要维护。'
+            : '策略与变通的时刻。非常情境需要非常手段，但需警惕长期的代价。策略是工具，诚信是根基。',
+        '宝剑八': reversed
+            ? '束缚的松动，或自我限制的觉醒。外界的束缚往往始于内心的认同——看见绳索是自己绑的，才能开始解开它。'
+            : '自我设限的困境。看似无路可走，实则是自己的信念画地为牢。这不是批评，而是邀请你重新检查「不可能」的来源。',
+        '宝剑九': reversed
+            ? '焦虑的缓解，或面对恐惧。噩梦在晨光中最易消散——行动是焦虑的解药，而逃避是它的燃料。'
+            : '深夜的焦虑与担忧。虽然痛苦强烈，但多数恐惧在黎明前都会淡化。这不是否认，而是提醒自己：你曾度过无数个这样的夜晚。',
+        '宝剑十': reversed
+            ? '谷底回升，或结束的拖延。最暗的时刻意味着光明即将介入——但你需要允许结束发生，而非试图拯救已死的东西。'
+            : '某种心智模式的终结。虽然痛苦达到顶点，但也意味着转变即将发生。这不是末日，而是旧自我的葬礼与新自我的诞生。',
+
+        // 星币
+        '星币首牌': reversed
+            ? '机会的错失，或物质的焦虑。种子的价值在于播种，而非囤积——握在手中的种子永远不会发芽。'
+            : '物质机会的新开端。新的资源、项目或财务可能正在萌芽。这不是终点，而是需要培育的起点。',
+        '星币二': reversed
+            ? '失衡的忙碌，或过度的 juggling。平衡需要取舍，而非同时满足所有需求——试图抓住所有，往往失去所有。'
+            : '多重需求的巧妙平衡。在变动中保持灵活，享受平衡的艺术。这不是分心，而是对复杂性的优雅回应。',
+        '星币三': reversed
+            ? '合作的摩擦，或技能的不满。团队需要每个成员的独特贡献——同质化不是合作，而是复制。'
+            : '合作中的技能成长。通过团队协作，你的能力得到认可与提升。这不是依赖，而是1+1>2的创造。',
+        '星币四': reversed
+            ? '控制的释放，或财务的释放。安全感在流动中增长，在囤积中僵化——紧握的拳头无法接收新的礼物。'
+            : '对物质的保守控制。谨慎管理资源，但警惕过度囤积带来的僵化。这不是节俭，而是恐惧的伪装。',
+        '星币五': reversed
+            ? '困境的缓解，或援助的出现。寒冬中仍有温暖，只是需要主动寻找——有时帮助已经存在，只是骄傲让你看不见。'
+            : '物质或情感的匮乏时刻。虽然艰难，但这也是识别真正支持者的时机。匮乏是滤镜，让真实的连接浮现。',
+        '星币六': reversed
+            ? '给予的不平衡，或债务的陷阱。慷慨需要智慧，而非无条件的倾倒——过度给予往往源于想要被需要，而非真正的丰盛。'
+            : '慷慨的给予与接受。在资源的流动中，体验分享带来的丰盛。这不是交易，而是对宇宙丰饶的信任。',
+        '星币七': reversed
+            ? '耐心的耗尽，或收获的焦虑。成长有其不可压缩的时间——催促只会适得其反，就像不能通过拔苗让植物长得更快。'
+            : '耕耘后的耐心等待。之前的投入正在成熟，评估进展并规划下一步。这不是被动，而是对自然节律的尊重。',
+        '星币八': reversed
+            ? '工匠的倦怠，或完美主义的陷阱。卓越不等于无止境的打磨——完成也是技艺的一部分，有时「足够好」就是最好。'
+            : '专注的技艺精进。通过勤奋与细节的关注，建立专业上的声誉。这不是苦役，而是将平凡转化为艺术的过程。',
+        '星币九': reversed
+            ? '独立的代价，或享受的障碍。自给自足不等于孤立——分享丰盛不会减少它，就像分享光不会让蜡烛变暗。'
+            : '独立享受的成就感。通过自律获得的安全感，让你能够优雅地品味生活。这不是自私，而是对自己努力的尊重。',
+        '星币十': reversed
+            ? '传承的问题，或家庭的束缚。传统是资源也是负担——需要智慧地继承与更新，而非盲目复制或全盘否定。'
+            : '家庭与长远的传承。在更大的时间尺度上，建立持久的价值与遗产。这不是终点，而是将火炬传递给下一代的准备。'
+    };
+
+    return meanings[data.name] || (reversed
+        ? '能量在此牌呈现阻滞，需要向内审视调整。逆位不是「坏」，而是邀请你从另一个角度理解这张牌的信息。'
+        : '此牌的能量正在流动，带来积极的影响与指引。但记得：正位是助力，而非保证——你仍需主动参与。');
+}
+
+// 位置含义（基于专业塔罗知识，避免重复套话）
+function getPositionMeaning(data, position, reversed, topic, index) {
+    const isMajor = data.id < 22;
+    const suitType = data.suit || '大阿卡纳';
+    const topicLower = topic.toLowerCase();
+
+    // 三张牌阵解读
+    if (position.includes('过去')) {
+        const pastContexts = {
+            '爱情': [
+                `这段过往中深刻的情感经历相关。某次心动、失恋或关系的结束，让你在${topic}上形成了特定的情感反应模式。${data.name}的出现暗示：这段历史不是负担，而是让你更清楚自己要什么的滤镜。`,
+                `过去的情感剧本仍在潜意识中上演。${data.name}暗示了你在亲密关系中的某种「默认设置」——可能是过度付出、逃避冲突，或是把独立当作保护壳。看见它，才能改写它。`,
+                `曾经的某段关系像一面镜子，照出了你内心深处的渴望与恐惧。${data.name}暗示：那不是失败，而是灵魂在借由他人来认识自己。`
+            ],
+            '事业': [
+                `过往的职业选择塑造了现在的你。${data.name}代表那段时期的核心能量——可能是过度燃烧的热情，或是因恐惧而屈就的「安全」选项。理解这段历史，方能不重复它。`,
+                `曾经的某个项目、某次跳槽或某段职场关系，至今仍在影响你的决策模式。${data.name}暗示：你现在的「舒适区」其实是过去某次受伤后建立的防御工事。`,
+                `这段历史充满了 initiative 与试错。${data.name}显示：那些看似「失败」的尝试，实际上为你积累了不可替代的经验与辨识力。`
+            ],
+            '财运': [
+                `过去的财务决策塑造了现在的金钱观念。${data.name}暗示了你对金钱的情感态度——它不只是数字，更是安全感、自由或权力的象征。`,
+                `某次重大的财务事件（赚或赔）至今仍在影响你的决策。${data.name}暗示：你对金钱的反应往往不是基于当下，而是基于过去的创伤或狂喜。`,
+                `这段历史显示了你对资源的早期认知。${data.name}暗示：丰盛或匮乏的循环，往往始于内心对「足够」的定义。`
+            ],
+            '学业': [
+                `过往的学习经历塑造了现在的知识获取方式。${data.name}暗示：你对「学习」的态度——是享受探索，还是只为达标？——深受这段历史影响。`,
+                `曾经的某次考试、某个老师或某段求学经历，至今仍在影响你的自信心。${data.name}显示：那不是能力的判决，而是环境的产物。`,
+                `这段历史充满了好奇与挫折的交织。${data.name}暗示：你现在的学习瓶颈，可能来自过去某次「不被允许犯错」的经历有关。`
+            ],
+            '健康': [
+                `过往的身体经历或健康事件塑造了现在的身体意识。${data.name}暗示：你对身体信号的反应模式——是忽视、过度担忧，还是倾听？——始于这段历史。`,
+                `曾经的某次疾病、受伤或生活方式的改变，至今仍在影响你的健康观念。${data.name}显示：身体记得一切，包括那些心智已经遗忘的。`,
+                `这段历史暗示了你对「健康」的定义来源。${data.name}暗示：是社交媒体的标准，还是你身体真实的感受？`
+            ],
+            '人际': [
+                `过去的人际关系模式塑造了现在的社交风格。${data.name}暗示：你在关系中的角色——拯救者、逃避者、讨好者——往往源于早期的某段重要关系。`,
+                `曾经的某次背叛、某段深刻友谊或某次社交创伤，至今仍在影响你的信任能力。${data.name}显示：那不是你的错，但疗愈是你的责任。`,
+                `这段历史充满了连接与断裂的教训。${data.name}暗示：你现在的「社交面具」可能是过去某次真实表达受伤后的保护机制。`
+            ]
+        };
+
+        const defaultPast = [
+            `作为${isMajor ? '大阿卡纳' : suitType}牌，${data.name}代表你${topic}领域中一个重要的生命课题。这段过往可能以强烈的方式塑造了你的信念系统，至今仍在潜意识中运作。`,
+            `这段过往的能量 residue 仍在推动或阻碍着你。${data.name}暗示：历史不是过去，而是现在仍在呼吸的部分。`,
+            `曾经的某个关键时刻，像一颗种子埋入土中。${data.name}显示：它现在正在发芽，只是你可能还没认出它。`
+        ];
+
+        const contexts = pastContexts[topic] || defaultPast;
+        return contexts[index % contexts.length];
+    }
+
+    if (position.includes('现在') || position.includes('现在的你') || position.includes('状况')) {
+        const presentContexts = {
+            '爱情': [
+                `目前的感情状态正处于关键期。${data.name}${reversed ? '逆位' : ''}显示：你内心其实已经隐约知道答案，只是仍然在理性与情感之间摇摆。真正的改变，会在你开始诚实面对自己时出现。`,
+                `此刻的情感能量正在${reversed ? '经历内在的重新调整，外在进展放缓但内在工作正在进行' : '流动，带来新的可能性与觉察'}。${data.name}暗示：这不是终点，而是转折。`,
+                `当前的关系动态中，${data.name}代表你正在经历的核心情感课题。${reversed ? '逆位暗示这种能量被阻滞，需要内观而非外求' : '正位显示这种能量正在积极运作，带来成长的机会'}。`
+            ],
+            '事业': [
+                `当前的事业面临重要的抉择点。${data.name}显示：理性分析与直觉判断同样重要，但最终的答案往往在你「感觉对」的那个选项里。`,
+                `此刻的职场能量正在${reversed ? '重组，旧有的工作方式需要被重新审视' : '打开新的通道，你的能力正在被看见'}。${data.name}暗示：变化不是敌人，停滞才是。`,
+                `当前的工作状况中，${data.name}代表你正在经历的核心挑战或机遇。${reversed ? '逆位显示内在的阻力比外在的更大' : '正位显示宇宙正在为你的努力铺路'}。`
+            ],
+            '财运': [
+                `目前的财运正在转变。${data.name}暗示：谨慎投资与大胆尝试需要找到平衡点——过于保守会错失机会，过于激进会承担不必要的风险。`,
+                `此刻的金钱能量正在${reversed ? '经历阻滞，可能是恐惧或过去的财务创伤在作祟' : '流动，新的收入来源或投资机会可能出现'}。${data.name}显示：丰盛是一种频率，而非数字。`,
+                `当前的财务状况中，${data.name}代表你对金钱的核心态度。${reversed ? '逆位暗示需要重新定义「足够」的定义' : '正位显示你正在学习与金钱的健康关系'}。`
+            ],
+            '学业': [
+                `目前的学习正处于关键期。${data.name}显示：效率比时长更重要，理解比记忆更持久。找到让你「进入心流」的学习方式。`,
+                `此刻的学业能量正在${reversed ? '经历瓶颈，可能是方法或心态需要调整' : '打开新的理解维度，某个概念即将被突破'}。${data.name}暗示：困惑是理解的前奏。`,
+                `当前的学习状况中，${data.name}代表你正在经历的核心课题。${reversed ? '逆位显示内在的自我怀疑比外在的难度更大' : '正位显示你的努力正在产生质变'}。`
+            ],
+            '健康': [
+                `目前的身体正在发送信号。${data.name}暗示：症状是信使，而非敌人——它在告诉你什么需要被关注、什么需要被改变。`,
+                `此刻的健康能量正在${reversed ? '经历失衡，可能是长期忽视某个身体信号的结果' : '恢复，你的身体有强大的自愈能力'}。${data.name}显示：倾听比治疗更重要。`,
+                `当前的健康状况中，${data.name}代表你身心智的连接状态。${reversed ? '逆位暗示身心分离，需要重新建立对话' : '正位显示身体正在引导你走向更健康的方向'}。`
+            ],
+            '人际': [
+                `目前的人际关系正处于关键期。${data.name}显示：质量比数量重要，深度比广度持久。审视哪些关系在滋养你，哪些在消耗你。`,
+                `此刻的社交能量正在${reversed ? '经历重组，某些关系需要被重新评估或放手' : '扩展，新的连接正在形成'}。${data.name}暗示：孤独不是因为没有关系，而是因为没有真实的关系。`,
+                `当前的人际状况中，${data.name}代表你在关系中的核心模式。${reversed ? '逆位显示需要打破旧有的互动剧本' : '正位显示你正在建立更健康的边界与连接'}。`
+            ]
+        };
+
+        const defaultPresent = [
+            `此刻你正站在一个重要的 threshold 上。${data.name}的能量强烈地穿透当下，暗示这是一个意义深远的时期，你的选择将产生 ripple effects。`,
+            `当前的能量正在${reversed ? '经历内在的重新调整。这不是失败，而是必要的整合期' : '积极运作，带来清晰的方向与动力'}。${data.name}暗示：活在当下，但带着觉知。`,
+            `现在的状况中，${data.name}代表你最需要看见的核心信息。${reversed ? '逆位邀请你从另一个角度审视这个问题' : '正位确认你正在正确的道路上'}。`
+        ];
+
+        const contexts = presentContexts[topic] || defaultPresent;
+        return contexts[index % contexts.length];
+    }
+
+    if (position.includes('未来') || position.includes('走向') || position.includes('结果')) {
+        const futureContexts = {
+            '爱情': [
+                `未来的情感之路需要勇气与真诚。${data.name}显示：敞开心扉才能连接真正的关系，但敞开也意味着可能受伤——这是爱的代价，也是爱的价值。`,
+                `未来的能量正在逐渐转亮。${data.name}暗示：真正的改变会在你开始诚实面对自己时出现——不是改变对方，而是改变自己。`,
+                `未来的关系动态中，${data.name}代表即将到来的情感课题。${reversed ? '逆位暗示需要警惕旧模式的重现' : '正位显示新的可能性正在形成'}。`
+            ],
+            '事业': [
+                `未来的职业发展充满可能性。${data.name}显示：保持学习的心态将打开新的机遇之门，但机会只青睐那些已经准备好的人。`,
+                `未来的能量正在${reversed ? '经历延迟，可能是时机未到或准备不足' : '汇聚，你的长期投入即将产生可见的回报'}。${data.name}暗示：耐心不是等待，而是持续的准备。`,
+                `未来的职业走向中，${data.name}代表你即将面临的关键节点。${reversed ? '逆位暗示需要重新评估目标的可行性' : '正位显示晋升、转岗或新项目的开启'}。`
+            ],
+            '财运': [
+                `未来的财富增长需要耐心与智慧。${data.name}显示：机会总是青睐有准备的人，但准备不仅是技能，也包括对丰盛的信任。`,
+                `未来的财务能量正在${reversed ? '经历调整，可能需要重新分配资源或降低预期' : '打开新的通道，意外之财或投资回报可能出现'}。${data.name}暗示：给予与接受需要平衡。`,
+                `未来的金钱走向中，${data.name}代表你对财富的核心态度将如何影响结果。${reversed ? '逆位暗示 scarcity mindset 需要被 abundance mindset 取代' : '正位显示你的财务智慧正在成熟'}。`
+            ],
+            '学业': [
+                `未来的学业之路需要持续的好奇与毅力。${data.name}显示：知识的价值不在考试，而在它如何扩展你对世界的理解。`,
+                `未来的学习能量正在${reversed ? '经历挑战，可能需要调整方法或寻求帮助' : '打开新的维度，某个领域即将被突破'}。${data.name}暗示：终身学习不是口号，而是生存策略。`,
+                `未来的学业走向中，${data.name}代表你即将获得的核心领悟。${reversed ? '逆位暗示需要放下对「正确答案」的执念' : '正位显示努力即将转化为真正的理解'}。`
+            ],
+            '健康': [
+                `未来的健康之路需要预防与觉察。${data.name}显示：今天的习惯是明天的身体，微小的改变会产生复利效应。`,
+                `未来的身体能量正在${reversed ? '经历警示，某个被忽视的信号可能需要被正视' : '恢复与增强，你的自愈力比你想象的更强大'}。${data.name}暗示：身体是灵魂的庙宇，值得被善待。`,
+                `未来的健康走向中，${data.name}代表你即将建立的新习惯或需要打破的旧模式。${reversed ? '逆位暗示改变需要从小处开始，而非一蹴而就' : '正位显示积累的生活方式正在形成'}。`
+            ],
+            '人际': [
+                `未来的人际关系需要主动经营与真实表达。${data.name}显示：最深的连接往往始于一次冒险的坦诚——说真话，但带着爱。`,
+                `未来的社交能量正在${reversed ? '经历筛选，某些关系需要被放手以腾出空间给新的' : '扩展，志同道合的人正在被你吸引'}。${data.name}暗示：你是谁，决定了你吸引谁。`,
+                `未来的人际走向中，${data.name}代表你即将建立的核心连接。${reversed ? '逆位暗示需要修复某个重要的关系裂痕' : '正位显示新的深度关系即将形成'}。`
+            ]
+        };
+
+        const defaultFuture = [
+            `未来的能量正在逐渐转亮。${data.name}显示：真正的改变会在你开始诚实面对自己时出现——不是改变外界，而是改变你与外界的关系。`,
+            `未来的走向中，${data.name}代表即将到来的关键转折。${reversed ? '逆位暗示这个转折可能需要更长的时间或更多的内在工作' : '正位显示时机正在成熟，准备迎接'}。`,
+            `未来的可能性正在展开。${data.name}暗示：未来不是固定的终点，而是当下每一个选择的累积——你此刻的决定，正在书写那个未来。`
+        ];
+
+        const contexts = futureContexts[topic] || defaultFuture;
+        return contexts[index % contexts.length];
+    }
+
+    // 凯尔特十字额外位置（基于经典塔罗知识）
+    if (position.includes('阻碍') || position.includes('挑战')) {
+        const challengeTexts = [
+            `这是横在你与答案之间的核心障碍。${data.name}显示：这个阻碍不是来惩罚你的，而是来塑造你的——它精确地指向你需要成长的方向。${reversed ? '逆位暗示这个阻碍更多是内在的信念（「我不行」「太晚了」）而非外在的环境' : '正位显示这个阻碍虽然真实，但你拥有应对它的资源——只是需要被唤醒'}。`,
+            `这张横置的牌揭示了问题的关键张力。${data.name}代表那股对抗的能量——可能是恐惧、习惯，或一个你尚未看见的选择。${reversed ? '逆位暗示这股能量正在减弱，或是你内在对它的抗拒在降低' : '正位显示这股能量强劲，需要被正视而非绕过'}。`
+        ];
+        return challengeTexts[index % challengeTexts.length];
+    }
+
+    if (position.includes('根基') || position.includes('过去')) {
+        const rootTexts = [
+            `这是塑造当前状况的深层根基。${data.name}代表那些你可能已经遗忘，但仍在潜意识中运作的早期影响——可能是童年、某段关系，或一个你当时无法理解的决定。${reversed ? '逆位暗示这些根基正在松动：可能是疗愈的开始，也可能是危机的预警' : '正位显示这些根基仍在提供支撑，但也可能限制新的生长——理解它，才能选择保留或重建'}。`,
+            `这张牌揭示了问题的历史根源。${data.name}显示：现在的状况不是凭空出现的，它有很深的前史。${reversed ? '逆位暗示这段历史需要被重新审视——你可能一直误解了它的意义' : '正位显示这段历史仍在以健康的方式影响着你，它是你的资源而非负担'}。`
+        ];
+        return rootTexts[index % rootTexts.length];
+    }
+
+    if (position.includes('目标')) {
+        const goalTexts = [
+            `这是你 consciously 追求的方向，或你认为自己想要的结果。${data.name}显示：这个目标是否真正属于你，还是社会、家庭或恐惧的投射？${reversed ? '逆位暗示这个目标可能需要被重新审视——你追求的可能是别人的期待' : '正位显示这个目标与你的深层价值一致，值得投入——但记得：目标是方向，而非终点'}。`,
+            `这张牌代表你的「理想画面」——你希望在${topic}领域达到的状态。${data.name}暗示：理想是地图，不是领土。${reversed ? '逆位显示理想与现实之间存在落差，需要调整期望或方法' : '正位显示理想正在引导你，但别让对理想的执着遮蔽了当下的美好'}。`
+        ];
+        return goalTexts[index % goalTexts.length];
+    }
+
+    return `${data.name}在这个位置暗示了${topic}领域中一个需要被看见的维度。${reversed ? '逆位邀请你从内在寻找答案，而非向外追逐' : '正位确认这个方向的能量正在支持你'}。`;
+}
+
+// 行动指引（基于牌的具体特性，避免泛泛而谈）
+function getActionGuidance(data, reversed, topic, position) {
+    const isMajor = data.id < 22;
+    const suitType = data.suit || '大阿卡纳';
+
+    // 基于牌的核心特性生成建议
+    const guidanceMap = {
+        // 大阿卡纳
+        '愚者': reversed
+            ? '本周尝试一件你「觉得还没准备好」的小事。准备往往是拖延的伪装，勇气是在行动中生长的。'
+            : '跟随你的好奇心，哪怕它指向未知。今天可以做一件让你感到「这不像我」的事——那可能是新的你在敲门。',
+        '魔术师': reversed
+            ? '列出你拥有的三个资源（技能、人脉、时间），然后问自己：为什么我还没用它们？答案往往比想象中简单。'
+            : '选择一个你一直想启动的项目，今天只做第一步。魔术师的关键不是拥有全部，而是开始组合你已拥有的。',
+        '女祭司': reversed
+            ? '今晚睡前花10分钟写日记，不问问题，只是记录浮现的画面或感受。直觉在安静时说话，在忙碌时沉默。'
+            : '今天做一个决定，但不要逻辑说服自己。选择那个「感觉对」的选项，即使你说不出为什么。',
+        '皇后': reversed
+            ? '给自己买一束花或做一顿精致的饭——不是为了拍照，而是为了感受。你值得被滋养，尤其是被自己。'
+            : '今天对身边的人表达一次无条件的欣赏。丰盛的秘诀不是拥有更多，而是看见已拥有的。',
+        '皇帝': reversed
+            ? '检查你最近的日程表：有多少事是因为「应该」而非「想要」？取消一件，用那时间做真正重要的事。'
+            : '为本周设定一个清晰的边界——对某些人、某些事或某个习惯说「不」。结构不是限制，而是为自由创造空间。',
+        '教皇': reversed
+            ? '质疑一个你「一直相信」的观念。问：这是我选择的，还是我被教导的？独立思考从怀疑开始。'
+            : '向某个领域比你经验丰富的人请教一个问题。传统智慧的价值在于被传承，而非被崇拜。',
+        '恋人': reversed
+            ? '写一段对话：你 vs 你的恐惧。让恐惧说完，然后回应它。价值观的冲突往往在对话中找到共识。'
+            : '今天做一个基于价值而非便利的选择。问自己：五年后，我会为今天的选择骄傲吗？',
+        '战车': reversed
+            ? '列出你正在进行的三个「战线」，然后放弃其中一个。分散的意志力等于没有意志力。'
+            : '今天面对一个你一直在回避的小冲突。不是去赢，而是去理解——理解是驾驭的开始。',
+        '力量': reversed
+            ? '今天对某人表达脆弱——说一句「我不确定」或「我需要帮助」。真正的力量不需要永远坚强。'
+            : '用耐心而非暴力来推动一件拖延的事。像水一样——柔软却能穿石。',
+        '隐者': reversed
+            ? '主动联系一个你信任的人，分享你最近的困惑。孤立是答案的敌人，连接是理解的桥梁。'
+            : '今天安排一段独处时间——不带手机，不带书，只是坐着。答案往往在空白处浮现。',
+        '命运之轮': reversed
+            ? '写下你最近感到「倒霉」的三件事，然后为每件事找到一个隐藏的机会或教训。视角转换是转动命运之轮的手。'
+            : '今天做一个顺应而非对抗的决定。问：如果我相信生命在支持我，我会怎么选择？',
+        '正义': reversed
+            ? '诚实面对一个你一直在合理化的小行为。自我欺骗的利息比任何债务都高。'
+            : '今天做一个公正的决定——即使它让你短期不舒适。长期而言，诚信是最优策略。',
+        '倒吊人': reversed
+            ? '停止推动一件反复受阻的事。有时最好的行动是不行动，最好的前进是暂停。'
+            : '今天从一个完全不同的角度看待你的问题。如果我是我的朋友，我会给什么建议？',
+        '死神': reversed
+            ? '主动结束一件已经「死亡」的事——一个习惯、一段关系、一个项目。拖延结束只会延长痛苦。'
+            : '今天清理一个物理或心理的空间。结束不是损失，而是为新生命腾出房间。',
+        '节制': reversed
+            ? '检查你生活中的极端——工作/休息、社交/独处、消费/储蓄。找一个平衡点，哪怕只是微调。'
+            : '今天尝试融合两个看似矛盾的元素。创意往往在边界处诞生。',
+        '恶魔': reversed
+            ? '识别一个你「不得不」的习惯，然后问：如果我不做，最坏会怎样？自由的幻觉往往比真实的锁链更沉重。'
+            : '今天觉察一个让你上瘾的行为（手机、食物、购物），不做评判，只是观察。觉察是解放的第一步。',
+        '塔': reversed
+            ? '检查你生活中有哪些「看起来稳固」的东西其实是脆弱的。预防性拆解比被动崩塌更明智。'
+            : '如果今天有意外发生，深呼吸，告诉自己：这可能是必要的释放。在废墟中寻找种子。',
+        '星星': reversed
+            ? '写下三个你已经实现但曾经认为「不可能」的事。你比自己想象的更有能力——证据就在历史中。'
+            : '今天做一件让你感到「这太美好而不真实」的事。美好是真实的，只是我们常常忘记。',
+        '月亮': reversed
+            ? '面对一个你一直在回避的恐惧。问：如果它真的发生，我能做什么？恐惧在计划中消散。'
+            : '今天信任一次直觉而非数据。有些真相无法被测量，只能被感受。',
+        '太阳': reversed
+            ? '找到一件让你微笑的小事，然后允许自己享受它。快乐不需要被「 earned 」，它本身就是目的。'
+            : '今天分享你的喜悦——不是炫耀，而是感染。阳光在分享中更亮。',
+        '审判': reversed
+            ? '宽恕自己一个过去的错误——不是忘记，而是不再让它定义你。自我宽恕是重生的门票。'
+            : '今天回应一个内在的召唤——那个你一直「等准备好后再做」的事。准备已经完成，行动就是答案。',
+        '世界': reversed
+            ? '庆祝一个你「还没完成」的里程碑。圆满不是终点，而是过程中的某个节点。'
+            : '今天整合你最近学到的所有东西——写总结、教别人、或只是静静感受。完成是为了新的开始。',
+
+        // 权杖
+        '权杖首牌': reversed
+            ? '把那个「等有空再做」的创意写下来，设定一个30分钟的计时器，只做一点点。开始是最难的魔法。'
+            : '今天启动一个你热情所在的项目——不需要完美，只需要开始。原始的能量比精致的计划更有力量。',
+        '权杖二': reversed
+            ? '做一个你拖延已久的小决定。小决定的肌肉会锻炼做大决定的能力。'
+            : '列出两个选项，然后选择那个让你「有点害怕」的。成长在舒适区之外。',
+        '权杖三': reversed
+            ? '联系一个可能帮助你扩展视野的人。远见不是独自眺望，而是借他人的肩膀。'
+            : '今天分享你的愿景——不是推销，而是邀请。合作让远见变为现实。',
+        '权杖四': reversed
+            ? '创造一个让你感到「归属」的小仪式——哪怕只是固定的下午茶时间。稳定感可以自己创造。'
+            : '今天与身边的人庆祝一件小事。欢乐在分享中倍增，在独享中减损。',
+        '权杖五': reversed
+            ? '面对一个你一直在回避的分歧。健康的冲突比虚假的和弦更有价值。'
+            : '今天在争论中寻找对方的合理之处。理解不是同意，而是尊重。',
+        '权杖六': reversed
+            ? '认可自己的一个成就——不是谦虚，而是诚实。你值得被看见，尤其是被自己。'
+            : '今天接受一个赞美，不说「但是」。荣耀是继续前行的燃料。',
+        '权杖七': reversed
+            ? '评估你正在防守的「阵地」——值得吗？战略性撤退不是失败，而是智慧的体现。'
+            : '今天为一个你真正相信的立场辩护——不是攻击，而是坚定。',
+        '权杖八': reversed
+            ? '暂停，检查你的方向。速度需要目标，否则只是更快的迷路。'
+            : '今天快速推进一件拖延的事。Momentum 一旦开始，会自己加速。',
+        '权杖九': reversed
+            ? '安排一次真正的休息——不是刷手机，而是睡觉、散步、发呆。坚韧需要恢复来补充。'
+            : '今天再坚持一下——不是苦撑，而是相信黎明前的黑暗最深。',
+        '权杖十': reversed
+            ? '放下一件不属于你的责任。你能扛起世界，但不必永远扛起。'
+            : '今天寻求一次帮助——不是软弱，而是智慧。分担让重担变轻。',
+
+        // 圣杯
+        '圣杯首牌': reversed
+            ? '今天对某人表达一次无条件的善意——不求回报，不求回应。真心的给予本身就是回报。'
+            : '打开你的心，哪怕只是一条缝。爱从裂缝中涌入。',
+        '圣杯二': reversed
+            ? '检查一段关系中的「不平等」——谁在付出，谁在索取？健康的结合需要双向流动。'
+            : '今天与某人进行一次平等的对话——不是说服，而是交换视角。',
+        '圣杯三': reversed
+            ? '审视你的社交——哪些让你更满，哪些让你更空？质量比数量重要。'
+            : '今天与朋友分享一个真实的时刻——不是完美的，而是真实的。',
+        '圣杯四': reversed
+            ? '对一个新机会说「好」——即使它不在你的计划中。倦怠的解药是好奇。'
+            : '今天允许自己感到不满足——不是抱怨，而是诚实。不满是改变的起点。',
+        '圣杯五': reversed
+            ? '写下你失去的三样东西，然后写下你还拥有的三样。损失是真实的，但不是全部的。'
+            : '今天允许自己悲伤——不是压抑，而是释放。眼泪是心灵的雨水。',
+        '圣杯六': reversed
+            ? '做一件让你感到「像小时候」的事——不是怀旧，而是 reconnect 那个快乐的自己。'
+            : '今天感谢一个曾经帮助你的人——不是义务，而是感恩。',
+        '圣杯七': reversed
+            ? '放弃一个「看起来很好」的选项。选择少即是多，专注是力量。'
+            : '今天面对你的幻想——不是破除，而是分辨。真实的渴望在迷雾后等待。',
+        '圣杯八': reversed
+            ? '评估你「放不下」的东西——它还在滋养你，还是只是习惯？离开需要勇气，但停留的代价可能更高。'
+            : '今天离开一个不再服务的场景——不是逃避，而是成长。',
+        '圣杯九': reversed
+            ? '找到一件让你微笑的小事，然后允许自己享受它。满足在内，不在外。'
+            : '今天庆祝一个「足够好」的时刻——不是完美，而是足够。',
+        '圣杯十': reversed
+            ? '与家人或亲密的人进行一次真实的对话——不是和谐，而是真实。表面的和平比冲突更伤人。'
+            : '今天创造一个家庭的温馨时刻——不是大事，而是小事。',
+
+        // 宝剑
+        '宝剑首牌': reversed
+            ? '推迟一个重要的决定——不是逃避，而是让 clarity 自然浮现。真相需要耐心。'
+            : '今天做一个基于 clarity 的决定——不是情绪，而是洞见。清晰的思维是礼物。',
+        '宝剑二': reversed
+            ? '收集更多信息，然后再决定。僵局往往源于信息不足，而非选择困难。'
+            : '今天承认你的犹豫——不是弱点，而是谨慎。然后设定一个决定的截止日期。',
+        '宝剑三': reversed
+            ? '向信任的人分享你的痛苦——不是寻求建议，只是被看见。疗愈在连接中发生。'
+            : '今天允许自己感受痛苦——不是沉溺，而是穿越。心碎是理解的入口。',
+        '宝剑四': reversed
+            ? '结束一段休息，重新行动。休息的目的是返回，不是停留。'
+            : '今天安排一段真正的休息——不是懒惰，而是策略。空白处孕育新的想法。',
+        '宝剑五': reversed
+            ? '主动和解一个冲突——不是认输，而是选择连接而非胜利。'
+            : '今天反思一个「胜利」——它值得吗？有时「正确」不如「连接」重要。',
+        '宝剑六': reversed
+            ? '寻求帮助来度过一段困难——不是独自扛，而是借他人的船渡河。'
+            : '今天相信疗愈的过程——不是遗忘，而是带着教训前行。',
+        '宝剑七': reversed
+            ? '诚实面对一个你一直在「巧妙处理」的情况。捷径往往是最长的路。'
+            : '今天用策略解决一个问题——不是欺骗，而是智慧。',
+        '宝剑八': reversed
+            ? '做一个你「觉得不可能」的小行动。束缚往往是想象的，行动是解药。'
+            : '今天检查你的「不可能」——它来自事实，还是来自信念？',
+        '宝剑九': reversed
+            ? '面对一个让你焦虑的具体问题，写下三个可能的解决方案。焦虑在行动中消散。'
+            : '今天做一个让你焦虑的决定——不是冲动，而是勇敢。黎明前的黑暗最深。',
+        '宝剑十': reversed
+            ? '寻找结束中的开始——不是否认痛苦，而是相信转变。最暗的时刻意味着光明即将介入。'
+            : '今天允许一个结束发生——不是失败，而是为新生命腾出空间。',
+
+        // 星币
+        '星币首牌': reversed
+            ? '检查你的「等待完美时机」——时机永远不会完美，开始才是完美。'
+            : '今天投资一个种子——时间、金钱或精力。种子需要播种，而非囤积。',
+        '星币二': reversed
+            ? '放弃一个你正在 juggling 的球——不是失败，而是专注。少即是多。'
+            : '今天练习在变动中保持平衡——不是控制，而是适应。',
+        '星币三': reversed
+            ? '寻求反馈——不是认可，而是成长。团队需要每个成员的独特贡献。'
+            : '今天与他人合作完成一件事——不是独自做，而是共同创造。',
+        '星币四': reversed
+            ? '分享一个你「囤积」的资源——知识、时间或物质。丰盛在流动中增长。'
+            : '今天检查你的「足够」——是恐惧还是真实？安全感在给予中增强。',
+        '星币五': reversed
+            ? '寻求帮助——不是软弱，而是智慧。寒冬中仍有温暖，只是需要主动寻找。'
+            : '今天在匮乏中寻找丰盛——不是否认，而是视角。匮乏是滤镜，让真实的连接浮现。',
+        '星币六': reversed
+            ? '检查你的给予——是慷慨，还是想要被需要？真正的给予不求回报。'
+            : '今天给予一个你拥有的东西——不是牺牲，而是分享。',
+        '星币七': reversed
+            ? '停止催促一个自然的过程——成长有其不可压缩的时间。'
+            : '今天耐心等待——不是被动，而是信任。耕耘后的等待是丰收的前奏。',
+        '星币八': reversed
+            ? '完成一个你「还在打磨」的项目——完美是完成的敌人。'
+            : '今天专注细节——不是 obsess，而是精进。卓越在重复中诞生。',
+        '星币九': reversed
+            ? '允许自己享受一个成果——不是自私，而是对自己努力的尊重。'
+            : '今天品味一个你拥有的东西——不是消费，而是欣赏。',
+        '星币十': reversed
+            ? '审视你的「传统」——是资源还是负担？继承需要智慧，而非盲目。'
+            : '今天思考你的 legacy——不是宏大，而是真实。你正在为未来播种。'
+    };
+
+    let guidance = guidanceMap[data.name];
+
+    if (!guidance) {
+        if (reversed) {
+            guidance = `今天花15分钟静心反思${topic}领域中一个让你感到「卡住」的地方。逆位的${data.name}暗示：答案不在外界，而在你尚未倾听的内在声音中。`;
+        } else {
+            guidance = `今天在${topic}领域采取一个具体的小行动——不需要大，只需要真实。正位的${data.name}显示：宇宙正在为你的勇气铺路，但路需要你自己走。`;
+        }
+    }
+
+    // 根据位置调整建议
+    if (position.includes('挑战')) {
+        guidance += ` 特别地，这个挑战要求你${reversed ? '先处理内在的阻力，再面对外在的问题' : '直接面对，而非绕行——穿越它，你会发现它比想象中脆弱'}。`;
+    } else if (position.includes('根基')) {
+        guidance += ` 对于深层根基，尝试${reversed ? '松动一个旧有的信念，看看会发生什么' : '感谢它曾经的保护，同时温柔地扩展它的边界'}。`;
+    } else if (position.includes('目标')) {
+        guidance += ` 关于这个目标，问自己${reversed ? '：这是「我想要」，还是「我应该要」？' : '：如果没有任何障碍，我会怎么追求它？那个答案才是真正的方向'}。`;
+    }
+
+    return guidance;
+}
+
+// 生成综合总结
+function generateSummary() {
+    const topic = selectedTopic;
+    const positions = selectedSpread === 3 ? spread3Positions : spread6Positions;
+
+    let summaryHTML = '<h3>🌙 综合指引</h3>';
+
+    // 生成故事线
+    const storyLines = [
+        `关于「${topic}」，你的牌阵讲述了一个从${positions[0]}到${positions[positions.length-1]}的旅程。`,
+        `这${selectedSpread}张牌共同描绘了一幅图景：你的${topic}正在经历一次重要的能量转换。`,
+        `牌阵的整体信息显示：你的${topic}课题正处于一个关键的转折点。`
+    ];
+    summaryHTML += `<p>${storyLines[Math.floor(Math.random() * storyLines.length)]}</p>`;
+
+    // 核心主题分析
+    const majorCount = drawnCards.filter(c => c.data.id < 22).length;
+    const reversedCount = drawnCards.filter(c => c.reversed).length;
+    const suits = {};
+    drawnCards.forEach(c => {
+        const suit = c.data.suit || '大阿卡纳';
+        suits[suit] = (suits[suit] || 0) + 1;
+    });
+    const dominantSuit = Object.entries(suits).sort((a, b) => b[1] - a[1])[0];
+
+    summaryHTML += '<p style="margin-top:12px;"><span class="highlight">【能量分析】</span>';
+
+    if (majorCount >= 2) {
+        summaryHTML += `牌阵中出现${majorCount}张大阿卡纳，显示这是一个重要的生命课题，而非日常琐事。宇宙正在通过这个课题推动你的灵魂成长。`;
+    } else {
+        summaryHTML += `牌阵以小阿卡纳为主，显示这是一个可以通过具体行动改善的日常情境。你有能力直接影响结果。`;
+    }
+
+    if (reversedCount >= 2) {
+        summaryHTML += ` ${reversedCount}张逆位牌暗示：当前的主要阻碍来自内在——可能是恐惧、旧模式或未处理的情绪。外在的改变需要先内在开始。`;
+    } else if (reversedCount === 0) {
+        summaryHTML += ` 全部正位显示：能量流动顺畅，这是一个积极行动的好时机。`;
+    } else {
+        summaryHTML += ` 1张逆位牌是一个温和的提醒——某个领域需要额外的觉察，但不是严重的阻碍。`;
+    }
+
+    if (dominantSuit && dominantSuit[0] !== '大阿卡纳') {
+        const suitMeanings = {
+            '权杖': '行动、热情与创造',
+            '圣杯': '情感、关系与直觉',
+            '宝剑': '思维、 clarity 与决策',
+            '星币': '物质、安全与务实'
+        };
+        summaryHTML += ` ${dominantSuit[0]}牌的主导显示：当前的核心议题围绕「${suitMeanings[dominantSuit[0]]}」展开。`;
+    }
+
+    summaryHTML += '</p>';
+
+    // 牌与牌之间的关系
+    if (drawnCards.length >= 2) {
+        summaryHTML += '<p style="margin-top:12px;"><span class="highlight">【牌阵对话】</span>';
+        const firstCard = drawnCards[0].data.name;
+        const lastCard = drawnCards[drawnCards.length-1].data.name;
+        summaryHTML += `从${firstCard}到${lastCard}，牌阵展示了一条转化之路。起点暗示了你从哪里来，终点暗示你可能往哪里去——但记得，路径上的每一步都是你当下选择的累积。`;
+        summaryHTML += '</p>';
+    }
+
+    // 具体建议
+    summaryHTML += '<p style="margin-top:12px;"><span class="highlight">【本周实践】</span>';
+    const practices = [
+        `每天花5分钟回顾这个牌阵，问自己：今天我可以在${topic}领域做出什么小改变？`,
+        `写下这个牌阵中让你印象最深的牌，贴在显眼处。让它成为你本周的「能量锚点」。`,
+        `选择一个牌阵中的行动建议，在本周内实践。塔罗的价值不在预测，而在激活你的觉察与行动。`,
+        `与一个信任的人分享这个牌阵的某个洞见。说出来，会让理解更深。`
+    ];
+    summaryHTML += practices[Math.floor(Math.random() * practices.length)];
+    summaryHTML += '</p>';
+
+    // 结束语
+    summaryHTML += `
+        <div style="margin-top:16px;padding:14px;background:rgba(255,255,255,0.05);border-radius:14px;text-align:center;">
+            <p style="font-style:italic;color:#ffd0e8;line-height:1.8;">
+                ✨ 塔罗给出的不是命令，而是觉醒。<br>
+                真正决定未来的人，始终是你自己。<br>
+                愿你在${topic}的旅程中，找到属于自己的光 ✨
+            </p>
+        </div>
+    `;
+
+    document.getElementById('summaryReading').innerHTML = summaryHTML;
+}
+
+// 分享功能
+function shareReading() {
+    const topicName = selectedTopic.length > 8 ? selectedTopic.substring(0, 8) + '...' : selectedTopic;
+    const cardNames = drawnCards.map(c => c.data.name).join(' · ');
+    const text = `🔮 我刚在「粉晶塔罗」完成了一次${selectedSpread}张牌阵占卜
+
+主题：${topicName}
+牌面：${cardNames}
+
+✨ 塔罗给出的不是命令，而是觉醒
+✨ 真正决定未来的人，始终是你自己
+
+来体验你的专属指引吧~`;
+
+    if (navigator.share) {
+        navigator.share({ title: '粉晶塔罗', text: text });
+    } else {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('已复制分享文案到剪贴板');
+        });
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.85);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 24px;
+        font-size: 14px;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.2);
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
+}
+
+// 重新开始
+function restart() {
+    currentStep = 1;
+    selectedSpread = 0;
+    selectedTopic = '';
+    shuffleCount = 0;
+    cutPile = null;
+    drawnCards = [];
+    deck = [];
+
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('shuffleArea').classList.remove('active');
+    document.getElementById('shuffleArea').style.display = '';
+    document.getElementById('cutArea').classList.remove('active');
+    document.getElementById('cutArea').style.display = '';
+    document.getElementById('drawArea').classList.remove('active');
+    document.getElementById('drawArea').style.display = '';
+    document.getElementById('spreadDisplay').classList.remove('active');
+    document.getElementById('spreadDisplay').style.display = '';
+    document.getElementById('readingSection').classList.remove('active');
+    document.getElementById('readingSection').style.display = '';
+
+    document.querySelectorAll('.spread-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('customTopic').value = '';
+    document.getElementById('startBtn').disabled = true;
+    document.getElementById('drawnCardsDisplay').innerHTML = '';
+    document.getElementById('readingsContainer').innerHTML = '';
+    document.getElementById('summaryReading').innerHTML = '';
+
+    updateStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 初始化
+initParticles();
+updateStep(1);
+
+// ========== 额外功能与优化 ==========
+
+// 触摸反馈优化（移动端）
+document.addEventListener('touchstart', function(e) {
+    if (e.target.closest('.deck-card, .cut-pile, .draw-deck, .topic-btn, .spread-btn')) {
+        e.target.style.transform = 'scale(0.95)';
+    }
+}, {passive: true});
+
+document.addEventListener('touchend', function(e) {
+    if (e.target.closest('.deck-card, .cut-pile, .draw-deck, .topic-btn, .spread-btn')) {
+        setTimeout(() => {
+            e.target.style.transform = '';
+        }, 100);
+    }
+}, {passive: true});
+
+// 防止双击缩放
+document.addEventListener('dblclick', function(e) {
+    if (e.target.closest('.draw-deck, .cut-pile, .deck-card')) {
+        e.preventDefault();
+    }
+}, {passive: false});
+
+// 抽牌时的音效提示（使用Web Audio API生成简单音效）
+function playDrawSound() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+        oscillator.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.3);
+    } catch(e) {
+        // 音频播放失败时静默处理
+    }
+}
+
+// 洗牌时的音效
+function playShuffleSound() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const bufferSize = audioCtx.sampleRate * 0.1;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.1;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const gainNode = audioCtx.createGain();
+        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+        noise.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        noise.start();
+    } catch(e) {
+        // 音频播放失败时静默处理
+    }
+}
+
+
+
+// 页面可见性变化时的处理（切换标签页后恢复）
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        // 页面重新可见时，恢复动画
+        document.querySelectorAll('.deck-card').forEach(card => {
+            card.style.animation = 'none';
+            setTimeout(() => {
+                card.style.animation = '';
+            }, 10);
+        });
+    }
+});
+
+// 键盘快捷键支持（桌面端）
+document.addEventListener('keydown', function(e) {
+    // 空格键：随机选一张扇形牌
+    if (e.code === 'Space' && document.getElementById('drawArea').classList.contains('active')) {
+        e.preventDefault();
+        const fanCards = document.querySelectorAll('.fan-card:not(.selected)');
+        if (fanCards.length > 0) {
+            const randomCard = fanCards[Math.floor(Math.random() * fanCards.length)];
+            randomCard.click();
+        }
+    }
+    // Enter键：洗牌或进入下一步
+    if (e.code === 'Enter') {
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        if (shuffleBtn && !shuffleBtn.disabled && shuffleBtn.offsetParent !== null) {
+            e.preventDefault();
+            shuffleBtn.click();
+        }
+    }
+});
+
+// 滚动时的视差效果（背景粒子）
+let ticking = false;
+window.addEventListener('scroll', function() {
+    if (!ticking) {
+        window.requestAnimationFrame(function() {
+            const scrolled = window.pageYOffset;
+            const particles = document.querySelectorAll('.particle');
+            particles.forEach((p, i) => {
+                const speed = 0.5 + (i % 3) * 0.2;
+                p.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+            ticking = false;
+        });
+        ticking = true;
+    }
+}, {passive: true});
+
+// 牌阵展示的增强动画
+function enhanceCardAnimations() {
+    const cards = document.querySelectorAll('.final-card');
+    cards.forEach((card, index) => {
+        card.addEventListener('click', function() {
+            // 点击牌时显示详细信息（弹出层）
+            showCardDetail(card, index);
+        });
+
+        // 长按显示详细信息
+        let pressTimer;
+        card.addEventListener('touchstart', function(e) {
+            pressTimer = setTimeout(() => {
+                showCardDetail(card, index);
+            }, 500);
+        }, {passive: true});
+
+        card.addEventListener('touchend', function() {
+            clearTimeout(pressTimer);
+        }, {passive: true});
+    });
+}
+
+// 显示牌的详细信息
+function showCardDetail(cardElement, index) {
+    if (!drawnCards[index]) return;
+
+    const card = drawnCards[index];
+    const detail = document.createElement('div');
+    detail.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(20, 10, 40, 0.95);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 122, 198, 0.3);
+        border-radius: 24px;
+        padding: 24px;
+        max-width: 320px;
+        width: 90%;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    `;
+
+    const positions = selectedSpread === 3 ? spread3Positions : spread6Positions;
+
+    detail.innerHTML = `
+        <div style="text-align: center; margin-bottom: 16px;">
+            <div style="font-size: 60px; margin-bottom: 8px;">${card.data.emoji}</div>
+            <h3 style="color: #ffd0e8; margin-bottom: 4px;">${card.data.name}</h3>
+            <div style="color: rgba(255,255,255,0.6); font-size: 13px;">${card.reversed ? '逆位 ↓' : '正位 ↑'} · ${positions[index]}</div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.85);">
+            <p><span style="color: #ffd0e8; font-weight: 600;">关键词：</span>${card.data.keywords}</p>
+            <p style="margin-top: 8px;"><span style="color: #ffd0e8; font-weight: 600;">元素：</span>${card.data.element || card.data.suit}</p>
+            <p style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.1);">
+                ${getCardSpecificMeaning(card.data, card.reversed)}
+            </p>
+        </div>
+        <button onclick="this.parentElement.remove(); document.getElementById('detailOverlay')?.remove()"
+            style="width: 100%; margin-top: 16px; padding: 12px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1); color: #fff; border-radius: 12px; cursor: pointer;
+            font-family: inherit; font-size: 14px;">
+            关闭
+        </button>
+    `;
+
+    // 添加遮罩层
+    const overlay = document.createElement('div');
+    overlay.id = 'detailOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 999;
+        animation: fadeIn 0.3s ease;
+    `;
+    overlay.onclick = function() {
+        detail.remove();
+        overlay.remove();
+    };
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(detail);
+}
+
+// 在 showSpread 函数后调用增强动画
+const originalShowSpread = showSpread;
+showSpread = function() {
+    const result = originalShowSpread.apply(this, arguments);
+    setTimeout(enhanceCardAnimations, 2500);
+    return result;
+};
+
+
+// ========== 最终优化 ==========
+
+// 页面加载完成后的初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 预加载音频上下文（解决某些浏览器需要用户交互才能播放音频的问题）
+    document.body.addEventListener('click', function initAudio() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        } catch(e) {}
+        document.body.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    // 检测是否为移动设备
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+        document.body.classList.add('mobile');
+    }
+
+    // 性能优化：使用 Intersection Observer 懒加载动画
+    const observerOptions = {
+        root: null,
+        rootMargin: '50px',
+        threshold: 0.1
+    };
+
+    const animationObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            } else {
+                entry.target.style.animationPlayState = 'paused';
+            }
+        });
+    }, observerOptions);
+
+    // 观察所有动画元素
+    setTimeout(() => {
+        document.querySelectorAll('.particle, .deck-card, .final-card').forEach(el => {
+            animationObserver.observe(el);
+        });
+    }, 1000);
+});
+
+// 错误处理：防止JS错误导致页面崩溃
+window.addEventListener('error', function(e) {
+    console.warn('塔罗应用错误:', e.message);
+    // 不阻止默认行为，只是记录
+});
+
+window.addEventListener('unhandledrejection', function(e) {
+    console.warn('未处理的Promise:', e.reason);
+    e.preventDefault();
+});
+
+// 性能监控：长时间操作时显示提示
+let longOperationTimer;
+function startLongOperation() {
+    longOperationTimer = setTimeout(() => {
+        showToast('正在处理中，请稍候...');
+    }, 3000);
+}
+
+function endLongOperation() {
+    clearTimeout(longOperationTimer);
+}
+
+// 在洗牌和抽牌时使用
+const originalShuffleDeck2 = shuffleDeck;
+shuffleDeck = function() {
+    startLongOperation();
+    const result = originalShuffleDeck2.apply(this, arguments);
+    endLongOperation();
+    return result;
+};
+
+const originalSelectFanCard = selectFanCard;
+selectFanCard = function(cardEl, deckIndex) {
+    startLongOperation();
+    const result = originalSelectFanCard.apply(this, arguments);
+    endLongOperation();
+    return result;
+};
+
+// 网络状态检测
+window.addEventListener('online', () => showToast('已连接网络'));
+window.addEventListener('offline', () => showToast('已进入离线模式，功能不受影响'));
+
+// 本地存储：保存用户的最后一次占卜（可选）
+function saveLastReading() {
+    try {
+        const readingData = {
+            topic: selectedTopic,
+            spread: selectedSpread,
+            cards: drawnCards.map(c => ({ name: c.data.name, reversed: c.reversed })),
+            date: new Date().toISOString()
+        };
+        localStorage.setItem('lastTarotReading', JSON.stringify(readingData));
+    } catch(e) {
+        // 隐私模式或存储满时静默失败
+    }
+}
+
+// 在 showReading 后保存
+const originalShowReading2 = showReading;
+showReading = function() {
+    const result = originalShowReading2.apply(this, arguments);
+    setTimeout(saveLastReading, 1000);
+    return result;
+};
+
+// 读取最后一次占卜
+function loadLastReading() {
+    try {
+        const data = localStorage.getItem('lastTarotReading');
+        if (data) {
+            const reading = JSON.parse(data);
+            console.log('上次占卜:', reading);
+            // 可以在这里添加恢复功能
+        }
+    } catch(e) {}
+}
+
+// 页面加载时尝试恢复
+// loadLastReading(); // 暂时禁用，避免自动恢复干扰用户体验
+
+// 打印欢迎信息
+console.log('%c🔮 粉晶塔罗', 'font-size: 24px; font-weight: bold; color: #ff7ac6;');
+console.log('%c命运正在回应你的内心', 'font-size: 14px; color: #a855f7;');
+console.log('%c这是一个单文件应用，所有功能都在本地运行，无需服务器', 'font-size: 12px; color: #666;');
+
+</script>
+
+</body>
+</html>
